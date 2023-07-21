@@ -15,11 +15,12 @@ class CapturedRequestCollection(
     private var sessionId: String,
     private var browserVersion: String,
     private var device: String,
-    capturedRequest: CapturedRequest
+    private val firstRequestStartTime: Long
 ) {
-    private val capturedRequests: MutableList<CapturedRequest> = mutableListOf(capturedRequest)
+    private val capturedRequests: MutableList<CapturedRequest> = mutableListOf()
 
     fun add(capturedRequest: CapturedRequest) {
+        capturedRequest.setNavigationStart(firstRequestStartTime)
         capturedRequests.add(capturedRequest)
     }
 

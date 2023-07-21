@@ -10,6 +10,7 @@ import com.bluetriangle.analytics.networkcapture.CapturedRequestCollection
 import com.bluetriangle.analytics.screenTracking.ActivityLifecycleTracker
 import com.bluetriangle.analytics.screenTracking.FragmentLifecycleTracker
 import com.bluetriangle.analytics.screenTracking.BTTScreenLifecyleTracker
+import com.bluetriangle.analytics.utility.logD
 import java.io.File
 import java.lang.ref.WeakReference
 import java.util.concurrent.ConcurrentHashMap
@@ -79,6 +80,7 @@ class Tracker private constructor(
         configuration.globalUserId = globalUserId
 
         val sessionId = Utils.generateRandomId()
+        logD("SessionID:", sessionId)
         setSessionId(sessionId)
         configuration.sessionId = sessionId
 
@@ -175,11 +177,12 @@ class Tracker private constructor(
      * @param capturedRequest
      */
     fun submitCapturedRequest(capturedRequest: CapturedRequest?) {
+        if(capturedRequest == null) return
+
         if (configuration.shouldSampleNetwork) {
             getMostRecentTimer()?.let { timer ->
-                capturedRequest?.setNavigationStart(timer.start)
                 if (capturedRequests.containsKey(timer.start)) {
-                    capturedRequests[timer.start]!!.add(capturedRequest!!)
+                    capturedRequests[timer.start]!!.add(capturedRequest)
                 } else {
                     val capturedRequestCollection = CapturedRequestCollection(
                         configuration.siteId!!,
@@ -190,8 +193,9 @@ class Tracker private constructor(
                         configuration.sessionId!!,
                         globalFields[Timer.FIELD_BROWSER_VERSION]!!,
                         globalFields[Timer.FIELD_DEVICE]!!,
-                        capturedRequest!!
+                        capturedRequest.startTime
                     )
+                    capturedRequestCollection.add(capturedRequest)
                     capturedRequests[timer.start] = capturedRequestCollection
                 }
             }
