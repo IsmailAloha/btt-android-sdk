@@ -58,6 +58,7 @@ dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-reflect:1.8.21'
 
     api("androidx.compose.foundation:foundation:1.4.3")
+    implementation 'androidx.lifecycle:lifecycle-process:2.6.1'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
