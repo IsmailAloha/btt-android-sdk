@@ -95,7 +95,9 @@ class Tracker private constructor(
             screenTrackMonitor,
             fragmentLifecycleTracker
         )
-        LaunchTimeMonitor.initialize(application)
+        if(configuration.isLaunchTimeEnabled) {
+            LaunchTimeMonitor.initialize(application)
+        }
         application.registerActivityLifecycleCallbacks(activityLifecycleTracker)
 
         anrManager = AnrManager(configuration)
