@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.app.Application.ActivityLifecycleCallbacks
 import android.os.Bundle
+import android.util.Log
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
@@ -54,12 +55,13 @@ class LaunchTimeMonitor private constructor(application: Application) : Activity
     }
 
     override fun onActivityStarted(activity: Activity) {
-        if(initTime == -1L && wasAppInBackground) {
+        logD(TAG, "${activity::class.java.simpleName}::onActivityStarted::$wasAppInBackground::$isAppInBackground")
+        if(initTime == -1L && (wasAppInBackground || isAppInBackground)) {
             wasAppInBackground = false
+            isAppInBackground = false
             launchType = LaunchType.Hot
             initTime = System.currentTimeMillis()
         }
-        logD(TAG, "${activity::class.java.simpleName}::onActivityStarted")
     }
 
     override fun onActivityResumed(activity: Activity) {
@@ -72,7 +74,10 @@ class LaunchTimeMonitor private constructor(application: Application) : Activity
 
     override fun onActivityPostResumed(activity: Activity) {
         super.onActivityPostResumed(activity)
+        if(initTime == -1L) return
+        wasAppInBackground = false
         val launchTime = System.currentTimeMillis() - initTime
+        initTime = -1L
         val timer = Timer()
         timer.startWithoutPerformanceMonitor()
         timer.setPageName("LaunchTime")
@@ -108,7 +113,7 @@ class LaunchTimeMonitor private constructor(application: Application) : Activity
     private fun onAppCreated() {
         launchType = LaunchType.Cold
         initTime = System.currentTimeMillis()
-        logD(TAG, "--------APP CREATED--------")
+        Log.d("BlueTriangle", "$TAG: --------APP CREATED--------")
     }
 
     private fun onAppBackground() {
