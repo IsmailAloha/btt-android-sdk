@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".DemoApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_config"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:networkSecurityConfig="@xml/network_config"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ConfigActivity"
+            android:name=".kotlin.CPUTestActivity"
+            android:exported="false" />
+        <activity
+            android:name=".HomeActivity"
             android:exported="true"
             android:label="@string/app_name">
             <intent-filter>
@@ -21,11 +25,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity
-            android:name=".HomeActivity"
-            android:exported="false" />
-
         <activity
             android:name=".java.JavaTestListActivity"
             android:exported="false" />
@@ -35,7 +34,6 @@
         <activity
             android:name=".java.screenTracking.ScreenTrackingActivity"
             android:exported="false" />
-
         <activity
             android:name=".kotlin.KotlinTestListActivity"
             android:exported="false" />
@@ -45,14 +43,12 @@
         <activity
             android:name=".kotlin.screenTracking.ScreenTrackingActivity"
             android:exported="false" />
-
         <activity
             android:name=".java.ANRTestActivity"
             android:exported="false" />
         <activity
             android:name=".kotlin.ANRTestActivity"
             android:exported="false" />
-
     </application>
 
 </manifest>

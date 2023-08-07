@@ -16,6 +16,7 @@ import com.bluetriangle.analytics.okhttp.BlueTriangleOkHttpInterceptor;
 import com.bluetriangle.android.demo.R;
 import com.bluetriangle.android.demo.databinding.ActivityTestListBinding;
 import com.bluetriangle.android.demo.java.screenTracking.ScreenTrackingActivity;
+import com.bluetriangle.android.demo.kotlin.CPUTestActivity;
 import com.bluetriangle.android.demo.kotlin.TestListViewModel;
 import com.bluetriangle.android.demo.tests.ANRTest;
 import com.bluetriangle.android.demo.tests.ANRTestScenario;
@@ -69,6 +70,11 @@ public class JavaTestListActivity extends AppCompatActivity {
         binding.buttonAnr.setOnClickListener(v -> {
             launchAnrActivity(ANRTestScenario.Unknown, ANRTest.Unknown);
         });
+
+        binding.cpuTest.setOnClickListener((v)-> {
+            startActivity(new Intent(this, CPUTestActivity.class));
+        });
+
         binding.buttonLaunchGallery.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_PICK);
             intent.setType("image/*");
