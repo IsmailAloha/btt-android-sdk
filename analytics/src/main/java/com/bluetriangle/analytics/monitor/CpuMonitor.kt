@@ -4,6 +4,7 @@ import android.os.Build
 import android.os.SystemClock
 import android.system.Os
 import android.system.OsConstants
+import android.util.Log
 import com.bluetriangle.analytics.BlueTriangleConfiguration
 import com.bluetriangle.analytics.PerformanceReport
 import java.io.BufferedReader
@@ -16,8 +17,11 @@ import java.io.IOException
  */
 internal class CpuMonitor(configuration: BlueTriangleConfiguration): MetricMonitor {
 
+    var totalClockTicsLastSecond = 0L
+    var elapsedTimeLastSecond = 0L
+
     companion object {
-        private val CPU_STATS_FILE = File("/proc/self/stat")
+        private val CPU_STATS_FILE = File("/proc/${android.os.Process.myPid()}/stat")
     }
 
     override val metricFields: Map<String, String>
@@ -33,7 +37,6 @@ internal class CpuMonitor(configuration: BlueTriangleConfiguration): MetricMonit
     private var cumulativeCpu = 0.0
     private var cpuCount: Long = 0
 
-    private var lastCpuInfo: CpuInfo? = null
     private val clockSpeedHz = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
         Os.sysconf(OsConstants._SC_CLK_TCK)
     } else {
@@ -68,22 +71,24 @@ internal class CpuMonitor(configuration: BlueTriangleConfiguration): MetricMonit
     }
 
     override fun onBeforeSleep() {
-        if (lastCpuInfo == null) {
-            lastCpuInfo = if (clockSpeedHz > 0) readCpuInfo() else null
+        if(totalClockTicsLastSecond == 0L) {
+            totalClockTicsLastSecond = readCpuInfo()?.totalTime?:0L
+            elapsedTimeLastSecond = SystemClock.elapsedRealtime()
         }
     }
 
     override fun onAfterSleep() {
-        val cpuInfo = if (clockSpeedHz > 0) readCpuInfo() else null
-        if (lastCpuInfo != null && cpuInfo != null) {
-            val cpuTimeDeltaSec = cpuInfo.cpuTime - lastCpuInfo!!.cpuTime
-            val processTimeDeltaSec = cpuInfo.processTime - lastCpuInfo!!.processTime
-            if (processTimeDeltaSec > 0) {
-                val relAvgUsagePercent = (cpuTimeDeltaSec / processTimeDeltaSec) * 100.0
-                updateCpu(relAvgUsagePercent)
-                logger?.debug("CPU Usage: $relAvgUsagePercent")
-            }
-            lastCpuInfo = cpuInfo
+        val cpuHz = if(Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) Os.sysconf(OsConstants._SC_CLK_TCK) else 0
+        val cpuInfo = if (cpuHz > 0) readCpuInfo() else return
+        val elapsedTime = SystemClock.elapsedRealtime()
+        val totalClockTicks = readCpuInfo()?.totalTime?:0L
+        if (cpuInfo != null) {
+            val timeDelta = elapsedTime - elapsedTimeLastSecond
+            val clockTicksDelta = totalClockTicks - totalClockTicsLastSecond
+            val cpuUsage = (clockTicksDelta.toFloat()/(timeDelta/1000f * cpuHz))*100f
+            totalClockTicsLastSecond = totalClockTicks
+            elapsedTimeLastSecond = elapsedTime
+            Log.d("BlueTriangle", "CPU Usage: $cpuUsage%, Core #${cpuInfo.cpuCount}, Frequency: ${cpuHz}Hz, clockTicksDelta: $clockTicksDelta")
         }
     }
 
@@ -95,22 +100,16 @@ internal class CpuMonitor(configuration: BlueTriangleConfiguration): MetricMonit
         val cutime: Long, // the amount of time that this process’ waited-for children have been scheduled in user mode, measured in clock ticks.
         val cstime: Long, // the amount of time that this process’ waited-for children have been scheduled in kernel mode, measured in clock ticks.
         val startTime: Long, // the time the process started after system boot, measured in clock ticks.
+        val cpuCount: Int
     ) {
-        /**
-         * @return the time since the application launched, measured in seconds.
-         */
-        val processTime: Long
-            get() = uptimeSec - startTime / clockSpeedHz
-
         /**
          * @return the time CPU spent doing work for a given application process, and is measured in seconds.
          */
-        val cpuTime: Long
-            get() = (utime + stime + cutime + cstime) / clockSpeedHz
+        val totalTime = utime + stime + cutime + cstime
 
-        override fun toString(): String {
-            return "CpuInfo{clockSpeedHz=$clockSpeedHz, uptimeSec=$uptimeSec, utime=$utime, stime=$stime, cutime=$cutime, cstime=$cstime, startTime=$startTime}"
-        }
+        val seconds = uptimeSec - (startTime.toFloat() / clockSpeedHz)
+
+        val cpuUsage = 100f * ((totalTime / clockSpeedHz) / seconds)
 
         companion object {
             fun fromStats(clockSpeedHz: Long, stats: String): CpuInfo {
@@ -123,6 +122,7 @@ internal class CpuMonitor(configuration: BlueTriangleConfiguration): MetricMonit
                     statsList[15].toLong(),
                     statsList[16].toLong(),
                     statsList[21].toLong(),
+                    statsList[38].toInt()
                 )
             }
         }

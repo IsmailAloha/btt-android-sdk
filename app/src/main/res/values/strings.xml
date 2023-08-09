@@ -42,11 +42,13 @@
     <string name="task_infinite_loop">Infinite Loop</string>
     <string name="task_word_generator">Word Generator</string>
     <string name="task_io_operations">IO Operations</string>
+    <string name="task_ui_operation">UI Operations</string>
 
     <array name="task">
         <item>@string/task_infinite_loop</item>
         <item>@string/task_word_generator</item>
         <item>@string/task_io_operations</item>
+        <item>@string/task_ui_operation</item>
     </array>
 
     <string name="main_thread">Main Thread</string>

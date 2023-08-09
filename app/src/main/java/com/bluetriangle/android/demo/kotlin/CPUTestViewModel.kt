@@ -1,5 +1,6 @@
 package com.bluetriangle.android.demo.kotlin
 
+import android.widget.Button
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -7,6 +8,7 @@ import com.bluetriangle.analytics.Timer
 import com.bluetriangle.android.demo.tests.BTTTestCase
 import com.bluetriangle.android.demo.tests.IOOperationsTest
 import com.bluetriangle.android.demo.tests.InfiniteLoopTest
+import com.bluetriangle.android.demo.tests.UIOperationsTest
 import com.bluetriangle.android.demo.tests.WordGeneratorTest
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -18,9 +20,10 @@ class CPUTestViewModel : ViewModel() {
     val cpuThread = MutableLiveData(CPUThread.Main)
 
     enum class CPUTask(val testCase: BTTTestCase) {
-        InfiniteLoop(InfiniteLoopTest()),
-        WordGenerator(WordGeneratorTest("unconscious")),
-        IOOperations(IOOperationsTest())
+        InfiniteLoop(InfiniteLoopTest(20L)),
+        WordGenerator(WordGeneratorTest("unconscious", 60L)),
+        IOOperations(IOOperationsTest(60L)),
+        UIOperations(UIOperationsTest(60L))
     }
 
     enum class CPUThread(val dispatcher: CoroutineDispatcher) {
@@ -52,10 +55,15 @@ class CPUTestViewModel : ViewModel() {
         cpuThread.value = CPUThread.values()[pos]
     }
 
-    fun onRunTaskClicked() {
+    fun onRunTaskClicked(dummyButton: Button) {
         val task = cpuTask.value ?: return
         val thread = cpuThread.value ?: return
 
+        if(task == CPUTask.UIOperations) {
+            (task.testCase as UIOperationsTest).button = dummyButton
+            task.testCase.run()
+            return
+        }
         if (thread == CPUThread.Main) {
             task.testCase.run()
         } else {

@@ -10,10 +10,13 @@ class IOOperationsTest(val interval: Long = 10L):BTTTestCase {
 
     override fun run(): String? {
         val startTime = System.currentTimeMillis()
+        var counter = 0u
         val file = kotlin.io.path.createTempFile("test_file")
         while(System.currentTimeMillis() - startTime <= (interval * 1000)) {
-            file.writeBytes(title.toByteArray())
-            Thread.sleep(300)
+            counter++
+            if(counter % 1000u == 0u) {
+                file.writeBytes(title.toByteArray())
+            }
         }
         return null
     }
