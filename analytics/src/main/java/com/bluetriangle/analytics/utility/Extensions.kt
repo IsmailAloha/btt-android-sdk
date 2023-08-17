@@ -1,6 +1,9 @@
 package com.bluetriangle.analytics.utility
 
 import android.app.Activity
+import android.os.Build
+import android.system.Os
+import android.system.OsConstants
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager.FragmentLifecycleCallbacks
@@ -10,7 +13,7 @@ import com.bluetriangle.analytics.model.ScreenType
 import kotlin.reflect.full.memberProperties
 import kotlin.reflect.jvm.isAccessible
 
-fun logD(tag:String, message:String) {
+fun logD(tag: String, message: String) {
     Tracker.instance?.configuration?.logger?.debug("$tag: $message")
 }
 
@@ -20,7 +23,7 @@ inline fun <reified T : Any, reified R> T.getPrivateProperty(name: String): R? {
         .firstOrNull { it.name == name }
         ?.apply { isAccessible = true }
         ?.get(this)
-    if(property is R) {
+    if (property is R) {
         return property
     }
     return null
@@ -32,7 +35,7 @@ fun Fragment.getUniqueId(): String? {
 
 internal val Fragment.screen: Screen
     get() = Screen(
-        getUniqueId()?:"",
+        getUniqueId() ?: "",
         this::class.java.simpleName,
         ScreenType.Fragment
     )
@@ -44,10 +47,16 @@ internal val Activity.screen: Screen
         ScreenType.Activity
     )
 
-fun FragmentActivity.registerFragmentLifecycleCallback(callback:FragmentLifecycleCallbacks) {
-    supportFragmentManager.registerFragmentLifecycleCallbacks(callback,true)
+fun FragmentActivity.registerFragmentLifecycleCallback(callback: FragmentLifecycleCallbacks) {
+    supportFragmentManager.registerFragmentLifecycleCallbacks(callback, true)
 }
 
-fun FragmentActivity.unregisterFragmentLifecycleCallback(callback:FragmentLifecycleCallbacks) {
+fun FragmentActivity.unregisterFragmentLifecycleCallback(callback: FragmentLifecycleCallbacks) {
     supportFragmentManager.unregisterFragmentLifecycleCallbacks(callback)
+}
+
+fun getNumberOfCPUCores() = if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+    Os.sysconf(OsConstants._SC_NPROCESSORS_CONF)
+} else {
+    null
 }

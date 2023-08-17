@@ -46,7 +46,7 @@ internal object MetadataReader {
                     metadata,
                     PERFORMANCE_MONITOR_INTERVAL,
                     configuration.performanceMonitorIntervalMs
-                )
+                ).coerceAtLeast(500L)
                 configuration.isTrackCrashesEnabled =
                     readBool(metadata, TRACK_CRASHES_ENABLE, configuration.isTrackCrashesEnabled)
                 configuration.networkSampleRate =

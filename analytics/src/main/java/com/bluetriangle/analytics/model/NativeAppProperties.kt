@@ -10,7 +10,8 @@ internal data class NativeAppProperties(
     var loadTime:Long?=null,
     var fullTime:Long?=null,
     var maxMainThreadUsage:Long?=null,
-    var screenType:ScreenType?=null
+    var screenType:ScreenType?=null,
+    var numberOfCPUCores:Long?=null
 ):Parcelable {
     fun toJSONObject(): JSONObject {
         val obj = JSONObject()
@@ -18,6 +19,7 @@ internal data class NativeAppProperties(
         obj.put("fullTime", fullTime)
         obj.put("maxMainThreadUsage", maxMainThreadUsage)
         obj.put("screenType", screenType?.name)
+        obj.put("numberOfCPUCores", numberOfCPUCores)
         return obj
     }
 }

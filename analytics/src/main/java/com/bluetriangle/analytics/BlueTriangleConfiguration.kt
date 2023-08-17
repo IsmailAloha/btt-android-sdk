@@ -90,6 +90,9 @@ class BlueTriangleConfiguration {
 
     var isPerformanceMonitorEnabled = false
     var performanceMonitorIntervalMs = TimeUnit.SECONDS.toMillis(1)
+        set(value) {
+            field = value.coerceAtLeast(500L)
+        }
 
     /**
      * Enable or disable ANR detection and sending reports to the server.

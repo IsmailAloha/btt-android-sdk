@@ -3,6 +3,7 @@ package com.bluetriangle.analytics
 import android.os.Parcel
 import android.os.Parcelable
 import com.bluetriangle.analytics.model.NativeAppProperties
+import com.bluetriangle.analytics.utility.getNumberOfCPUCores
 
 /**
  * A timer instance that can be started, marked interactive, and ended.
@@ -152,7 +153,8 @@ class Timer : Parcelable {
             null,
             null,
             performanceMonitor?.maxMainThreadUsage,
-            null
+            null,
+            getNumberOfCPUCores()
         )
     }
 

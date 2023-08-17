@@ -60,6 +60,7 @@ class DemoApplication : Application() {
         configuration.isDebug = true
         configuration.networkSampleRate = 1.0
         configuration.isPerformanceMonitorEnabled = true
+        configuration.performanceMonitorIntervalMs = 500
         configuration.isLaunchTimeEnabled = true
         tracker = init(this, configuration)
 
