@@ -82,7 +82,7 @@ class Tracker private constructor(
         setGlobalUserId(globalUserId)
         configuration.globalUserId = globalUserId
 
-        val sessionId = Utils.generateRandomId()
+        val sessionId = configuration.sessionId?:Utils.generateRandomId()
         Log.d("SessionID", sessionId)
         setSessionId(sessionId)
         configuration.sessionId = sessionId
