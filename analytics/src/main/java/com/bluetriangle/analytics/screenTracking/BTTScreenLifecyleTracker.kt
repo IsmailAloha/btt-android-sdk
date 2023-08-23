@@ -43,7 +43,7 @@ internal class BTTScreenLifecyleTracker(private val screenTrackingEnabled: Boole
         val disappearTm = System.currentTimeMillis()
 
         timer.pageTimeCalculator = {
-            viewTm - loadTm
+            (viewTm - loadTm).coerceAtLeast(10)
         }
         timer.generateNativeAppProperties()
         timer.nativeAppProperties.loadTime = viewTm - loadTm
