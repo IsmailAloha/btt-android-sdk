@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import com.bluetriangle.analytics.BlueTriangleConfiguration
 import com.bluetriangle.analytics.Tracker
 import com.bluetriangle.analytics.Tracker.Companion.init
+import com.bluetriangle.analytics.trimLevelString
 import com.bluetriangle.android.demo.tests.ANRTest
 import com.bluetriangle.android.demo.tests.ANRTestFactory
 import com.bluetriangle.android.demo.tests.ANRTestScenario
@@ -65,6 +66,12 @@ class DemoApplication : Application() {
         tracker = init(this, configuration)
 
         tracker!!.setSessionTrafficSegmentName("Demo Traffic Segment")
+    }
+
+    override fun onTrimMemory(level: Int) {
+        super.onTrimMemory(level)
+        val warningLevelType = level.trimLevelString()
+        Log.d("DemoApplicationTag", warningLevelType)
     }
 
     private fun checkANRTestOnAppCreate() {

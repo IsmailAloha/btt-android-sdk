@@ -1,19 +1,26 @@
 package com.bluetriangle.analytics.monitor
 
-import android.app.ActivityManager
 import com.bluetriangle.analytics.BlueTriangleConfiguration
+import com.bluetriangle.analytics.CrashRunnable
 import com.bluetriangle.analytics.PerformanceReport
+import com.bluetriangle.analytics.Timer
 import com.bluetriangle.analytics.Tracker
+import com.bluetriangle.analytics.Utils
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
-internal class MemoryMonitor(configuration: BlueTriangleConfiguration): MetricMonitor {
+internal class MemoryMonitor(val configuration: BlueTriangleConfiguration) : MetricMonitor {
+
+    private val totalMemory = Runtime.getRuntime().maxMemory()
+
     override val metricFields: Map<String, String>
         get() = mapOf(
             PerformanceReport.FIELD_MIN_MEMORY to minMemory.toString(),
+            PerformanceReport.FIELD_TOTAL_MEMORY to totalMemory.toString(),
             PerformanceReport.FIELD_MAX_MEMORY to maxMemory.toString(),
             PerformanceReport.FIELD_AVG_MEMORY to calculateAverageMemory().toString()
         )
 
-    private val activityManager = Tracker.instance?.activityManager
     private var minMemory = Long.MAX_VALUE
     private var maxMemory: Long = 0
     private var cumulativeMemory: Long = 0
@@ -26,12 +33,56 @@ internal class MemoryMonitor(configuration: BlueTriangleConfiguration): MetricMo
         } else cumulativeMemory / memoryCount
     }
 
+    private var isMemoryThresholdReached = false
+
+    private val Long.mb: Long
+        get() = this / (1024 * 1024)
+
     override fun onBeforeSleep() {
-        val memoryInfo = ActivityManager.MemoryInfo()
-        activityManager?.getMemoryInfo(memoryInfo)
-        val usedMemory = memoryInfo.totalMem - memoryInfo.availMem
-        logger?.debug("Used Memory: $usedMemory", )
+        val usedMemory = Runtime.getRuntime().totalMemory()
+        logger?.debug("Used Memory: $usedMemory, Total Memory: $totalMemory")
+        if (usedMemory / totalMemory.toFloat() >= 0.8) {
+            if (!isMemoryThresholdReached) {
+                isMemoryThresholdReached = true
+                onThresholdReached(usedMemory.mb, totalMemory.mb)
+            }
+        } else {
+            isMemoryThresholdReached = false
+        }
         updateMemory(usedMemory)
+    }
+
+    private fun onThresholdReached(usedMemory:Long, totalMemory:Long) {
+        configuration.logger?.debug("Memory Warning recieved: Used: ${usedMemory}MB, Total: ${totalMemory}MB")
+
+        val timeStamp = System.currentTimeMillis().toString()
+        val mostRecentTimer = Tracker.instance?.getMostRecentTimer()
+        val crashHitsTimer: Timer = Timer().startWithoutPerformanceMonitor()
+        if (mostRecentTimer != null) {
+            crashHitsTimer.setPageName(
+                mostRecentTimer.getField(Timer.FIELD_PAGE_NAME)
+                    ?: Tracker.BTErrorType.MemoryWarning.value
+            )
+            mostRecentTimer.generateNativeAppProperties()
+            crashHitsTimer.nativeAppProperties = mostRecentTimer.nativeAppProperties
+        }
+        crashHitsTimer.setError(true)
+
+        try {
+            val thread = Thread(
+                CrashRunnable(
+                    configuration,
+                    "Critical memory usage detected. App using ${usedMemory}MB of App's limit ${totalMemory}MB",
+                    timeStamp,
+                    crashHitsTimer,
+                    Tracker.BTErrorType.MemoryWarning
+                )
+            )
+            thread.start()
+            thread.join()
+        } catch (interruptedException: InterruptedException) {
+            interruptedException.printStackTrace()
+        }
     }
 
     private fun updateMemory(memory: Long) {

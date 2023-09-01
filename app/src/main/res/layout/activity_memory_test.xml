@@ -17,36 +17,44 @@
 
         <Button
             android:id="@+id/timer_button"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
             android:onClick="@{(v)->viewModel.onTimerButtonClick()}"
             android:text="@{viewModel.isTimerStarted() ? @string/stop_timer : @string/start_timer}"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnAnrTestRun"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="122dp"
-            android:onClick="@{(v)->viewModel.onRunTaskClicked()}"
-            android:text="Run Task"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:onClick="@{(v)->viewModel.onAllocateHeapMemory()}"
+            android:text="Allocate Heap"
+            app:layout_constraintEnd_toStartOf="@+id/button"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/timer_button" />
 
         <Button
-            android:id="@+id/dummyButton"
-            android:layout_width="wrap_content"
+            android:id="@+id/button"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:alpha="0"
-            android:text="Dummy Button"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="16dp"
+            android:text="Allocate Stack"
+            android:onClick="@{(v)->viewModel.onAllocateStackMemory()}"
+            app:layout_constraintBottom_toBottomOf="@+id/btnAnrTestRun"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/btnAnrTestRun"
+            app:layout_constraintTop_toTopOf="@+id/btnAnrTestRun" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

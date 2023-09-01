@@ -2,13 +2,8 @@ package com.bluetriangle.android.demo.kotlin
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.bluetriangle.analytics.Timer
-import com.bluetriangle.android.demo.tests.BTTTestCase
-import com.bluetriangle.android.demo.tests.MemoryTest
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.bluetriangle.android.demo.tests.MemoryHeapTest
 
 class MemoryTestViewModel : ViewModel() {
 
@@ -27,9 +22,15 @@ class MemoryTestViewModel : ViewModel() {
         }
     }
 
-    fun onRunTaskClicked() {
-        viewModelScope.launch(Dispatchers.Default) {
-            MemoryTest().run()
-        }
+    fun onAllocateHeapMemory() {
+        Thread {
+            MemoryHeapTest(120).run()
+        }.start()
+    }
+
+    fun onAllocateStackMemory() {
+        Thread {
+            MemoryHeapTest(30).run()
+        }.start()
     }
 }

@@ -1,5 +1,6 @@
 package com.bluetriangle.analytics
 
+import android.app.Application
 import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
@@ -185,4 +186,16 @@ internal object Utils {
         val random = SecureRandom()
         return sampleRate >= random.nextDouble()
     }
+}
+
+
+fun Int.trimLevelString() = when (this) {
+    Application.TRIM_MEMORY_BACKGROUND -> "TRIM_MEMORY_BACKGROUND"
+    Application.TRIM_MEMORY_COMPLETE -> "TRIM_MEMORY_COMPLETE"
+    Application.TRIM_MEMORY_MODERATE -> "TRIM_MEMORY_MODERATE"
+    Application.TRIM_MEMORY_RUNNING_CRITICAL -> "TRIM_MEMORY_RUNNING_CRITICAL"
+    Application.TRIM_MEMORY_RUNNING_LOW -> "TRIM_MEMORY_RUNNING_LOW"
+    Application.TRIM_MEMORY_RUNNING_MODERATE -> "TRIM_MEMORY_RUNNING_MODERATE"
+    Application.TRIM_MEMORY_UI_HIDDEN -> "TRIM_MEMORY_UI_HIDDEN"
+    else -> "UNKNOWN"
 }

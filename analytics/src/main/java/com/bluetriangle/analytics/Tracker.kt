@@ -437,6 +437,7 @@ class Tracker private constructor(
     enum class BTErrorType(val value: String) {
         NativeAppCrash("NativeAppCrash"),
         ANRWarning("ANRWarning"),
+        MemoryWarning("MemoryWarning")
     }
 
     fun raiseTestException() {

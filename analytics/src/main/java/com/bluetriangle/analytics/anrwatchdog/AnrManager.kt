@@ -33,7 +33,7 @@ internal class AnrManager constructor(private val configuration: BlueTriangleCon
         val mostRecentTimer = Tracker.instance?.getMostRecentTimer()
         val crashHitsTimer: Timer = Timer().startWithoutPerformanceMonitor()
         if(mostRecentTimer != null) {
-            crashHitsTimer.setPageName(mostRecentTimer.getField(FIELD_PAGE_NAME)?:"ANRWarning")
+            crashHitsTimer.setPageName(mostRecentTimer.getField(FIELD_PAGE_NAME)?:Tracker.BTErrorType.ANRWarning.value)
             mostRecentTimer.generateNativeAppProperties()
             crashHitsTimer.nativeAppProperties = mostRecentTimer.nativeAppProperties
         }
