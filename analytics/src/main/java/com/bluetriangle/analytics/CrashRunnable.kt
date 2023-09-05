@@ -1,6 +1,7 @@
 package com.bluetriangle.analytics
 
 import android.net.Uri
+import com.bluetriangle.analytics.Constants.TIMER_MIN_PGTM
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.BufferedReader
@@ -47,7 +48,7 @@ internal class CrashRunnable(
     private fun submitTimer() {
         val tracker = Tracker.instance
         crashHitsTimer.pageTimeCalculator = {
-            11
+            TIMER_MIN_PGTM
         }
         crashHitsTimer.end()
         crashHitsTimer.setField(Timer.FIELD_EXCLUDED, "20")

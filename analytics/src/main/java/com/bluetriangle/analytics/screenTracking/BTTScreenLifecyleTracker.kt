@@ -1,5 +1,6 @@
 package com.bluetriangle.analytics.screenTracking
 
+import com.bluetriangle.analytics.Constants.TIMER_MIN_PGTM
 import com.bluetriangle.analytics.Timer
 import com.bluetriangle.analytics.model.Screen
 import com.bluetriangle.analytics.utility.logD
@@ -43,7 +44,7 @@ internal class BTTScreenLifecyleTracker(private val screenTrackingEnabled: Boole
         val disappearTm = System.currentTimeMillis()
 
         timer.pageTimeCalculator = {
-            (viewTm - loadTm).coerceAtLeast(11)
+            (viewTm - loadTm).coerceAtLeast(TIMER_MIN_PGTM)
         }
         timer.generateNativeAppProperties()
         timer.nativeAppProperties.loadTime = viewTm - loadTm
