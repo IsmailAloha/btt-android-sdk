@@ -11,8 +11,7 @@ import com.bluetriangle.analytics.networkcapture.CapturedRequest
 import com.bluetriangle.analytics.networkcapture.CapturedRequestCollection
 import com.bluetriangle.analytics.screenTracking.ActivityLifecycleTracker
 import com.bluetriangle.analytics.screenTracking.FragmentLifecycleTracker
-import com.bluetriangle.analytics.screenTracking.BTTScreenLifecyleTracker
-import com.bluetriangle.analytics.utility.logD
+import com.bluetriangle.analytics.screenTracking.BTTScreenLifecycleTracker
 import java.io.File
 import java.lang.ref.WeakReference
 import java.util.concurrent.ConcurrentHashMap
@@ -62,7 +61,7 @@ class Tracker private constructor(
      */
     private val capturedRequests = ConcurrentHashMap<Long, CapturedRequestCollection>()
 
-    internal val screenTrackMonitor: BTTScreenLifecyleTracker
+    internal val screenTrackMonitor: BTTScreenLifecycleTracker
     private val activityLifecycleTracker: ActivityLifecycleTracker
 
     init {
@@ -88,7 +87,7 @@ class Tracker private constructor(
         configuration.sessionId = sessionId
 
         trackerExecutor = TrackerExecutor(configuration)
-        screenTrackMonitor = BTTScreenLifecyleTracker(configuration.isScreenTrackingEnabled)
+        screenTrackMonitor = BTTScreenLifecycleTracker(configuration.isScreenTrackingEnabled)
 
         val fragmentLifecycleTracker = FragmentLifecycleTracker(screenTrackMonitor)
         activityLifecycleTracker = ActivityLifecycleTracker(
