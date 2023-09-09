@@ -187,6 +187,7 @@ class Tracker private constructor(
     fun submitCapturedRequest(capturedRequest: CapturedRequest?) {
         if (configuration.shouldSampleNetwork) {
             getMostRecentTimer()?.let { timer ->
+                configuration.logger?.debug("Network Request Captured: $capturedRequest for $timer")
                 capturedRequest?.setNavigationStart(timer.start)
                 if (capturedRequests.containsKey(timer.start)) {
                     capturedRequests[timer.start]!!.add(capturedRequest!!)
