@@ -52,9 +52,11 @@ internal class CrashRunnable(
         }
         crashHitsTimer.end()
         crashHitsTimer.setField(Timer.FIELD_EXCLUDED, "20")
-        crashHitsTimer.setPageName(
-            mostRecentTimer?.getField(Timer.FIELD_PAGE_NAME) ?: Constants.CRASH_PAGE_NAME
-        )
+        if(errorType == Tracker.BTErrorType.NativeAppCrash) {
+            crashHitsTimer.setPageName(
+                mostRecentTimer?.getField(Timer.FIELD_PAGE_NAME) ?: Constants.CRASH_PAGE_NAME
+            )
+        }
         crashHitsTimer.setFields(tracker?.globalFields?.toMap() ?: emptyMap())
         val timerRunnable = TimerRunnable(configuration, crashHitsTimer)
         timerRunnable.run()
