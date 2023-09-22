@@ -10,8 +10,8 @@ import com.bluetriangle.analytics.launchtime.LaunchTimeMonitor
 import com.bluetriangle.analytics.networkcapture.CapturedRequest
 import com.bluetriangle.analytics.networkcapture.CapturedRequestCollection
 import com.bluetriangle.analytics.screenTracking.ActivityLifecycleTracker
+import com.bluetriangle.analytics.screenTracking.BTTScreenLifecycleTracker
 import com.bluetriangle.analytics.screenTracking.FragmentLifecycleTracker
-import com.bluetriangle.analytics.screenTracking.BTTScreenLifecyleTracker
 import com.bluetriangle.analytics.utility.logD
 import java.io.File
 import java.lang.ref.WeakReference
