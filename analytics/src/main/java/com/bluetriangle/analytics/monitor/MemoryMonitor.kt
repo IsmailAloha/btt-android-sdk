@@ -5,9 +5,6 @@ import com.bluetriangle.analytics.CrashRunnable
 import com.bluetriangle.analytics.PerformanceReport
 import com.bluetriangle.analytics.Timer
 import com.bluetriangle.analytics.Tracker
-import com.bluetriangle.analytics.Utils
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
 
 internal class MemoryMonitor(val configuration: BlueTriangleConfiguration) : MetricMonitor {
 
@@ -39,7 +36,7 @@ internal class MemoryMonitor(val configuration: BlueTriangleConfiguration) : Met
         get() = this / (1024 * 1024)
 
     override fun onBeforeSleep() {
-        val usedMemory = Runtime.getRuntime().totalMemory()
+        val usedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()
         logger?.debug("Used Memory: $usedMemory, Total Memory: $totalMemory")
         if (usedMemory / totalMemory.toFloat() >= 0.8) {
             if (!isMemoryThresholdReached) {
