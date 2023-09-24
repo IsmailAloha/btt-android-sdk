@@ -37,19 +37,21 @@ internal class MemoryMonitor(val configuration: BlueTriangleConfiguration) : Met
         get() = this / (1024 * 1024)
 
     override fun onBeforeSleep() {
-        val usedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()
-        logger?.debug("Used Memory: $usedMemory, Total Memory: $totalMemory")
-        if (usedMemory / totalMemory.toFloat() >= 0.8) {
-            if (!isMemoryThresholdReached.get()) {
-                logger?.debug("Used isMemoryThresholdReached set to True")
-                isMemoryThresholdReached.set(true)
-                onThresholdReached(usedMemory.mb, totalMemory.mb)
+        synchronized(this) {
+            val usedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()
+            logger?.debug("Used Memory: $usedMemory, Total Memory: $totalMemory")
+            if (usedMemory / totalMemory.toFloat() >= 0.8) {
+                if (!isMemoryThresholdReached.get()) {
+                    logger?.debug("Used isMemoryThresholdReached set to True")
+                    isMemoryThresholdReached.set(true)
+                    onThresholdReached(usedMemory.mb, totalMemory.mb)
+                }
+            } else {
+                logger?.debug("Used isMemoryThresholdReached set to False")
+                isMemoryThresholdReached.set(false)
             }
-        } else {
-            logger?.debug("Used isMemoryThresholdReached set to False")
-            isMemoryThresholdReached.set(false)
+            updateMemory(usedMemory)
         }
-        updateMemory(usedMemory)
     }
 
     private fun onThresholdReached(usedMemory:Long, totalMemory:Long) {
