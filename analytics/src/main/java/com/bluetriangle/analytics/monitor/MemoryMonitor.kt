@@ -39,10 +39,10 @@ internal class MemoryMonitor(val configuration: BlueTriangleConfiguration) : Met
     override fun onBeforeSleep() {
         synchronized(this) {
             val usedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()
-            logger?.debug("Used Memory: $usedMemory, Total Memory: $totalMemory")
+            logger?.debug("Used Memory: $usedMemory, Total Memory: $totalMemory, isMemoryThresholdReached: ${isMemoryThresholdReached.get()}")
             if (usedMemory / totalMemory.toFloat() >= 0.8) {
                 if (!isMemoryThresholdReached.get()) {
-                    logger?.debug("Used isMemoryThresholdReached set to True")
+                    logger?.debug("Used isMemoryThresholdReached set to True, oldValue: ${isMemoryThresholdReached.get()}")
                     isMemoryThresholdReached.set(true)
                     onThresholdReached(usedMemory.mb, totalMemory.mb)
                 }
