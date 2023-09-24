@@ -5,6 +5,7 @@ import com.bluetriangle.analytics.CrashRunnable
 import com.bluetriangle.analytics.PerformanceReport
 import com.bluetriangle.analytics.Timer
 import com.bluetriangle.analytics.Tracker
+import java.util.concurrent.atomic.AtomicBoolean
 
 internal class MemoryMonitor(val configuration: BlueTriangleConfiguration) : MetricMonitor {
 
@@ -30,7 +31,7 @@ internal class MemoryMonitor(val configuration: BlueTriangleConfiguration) : Met
         } else cumulativeMemory / memoryCount
     }
 
-    private var isMemoryThresholdReached = false
+    private var isMemoryThresholdReached:AtomicBoolean = AtomicBoolean(false)
 
     private val Long.mb: Long
         get() = this / (1024 * 1024)
@@ -39,12 +40,12 @@ internal class MemoryMonitor(val configuration: BlueTriangleConfiguration) : Met
         val usedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()
         logger?.debug("Used Memory: $usedMemory, Total Memory: $totalMemory")
         if (usedMemory / totalMemory.toFloat() >= 0.8) {
-            if (!isMemoryThresholdReached) {
-                isMemoryThresholdReached = true
+            if (!isMemoryThresholdReached.get()) {
+                isMemoryThresholdReached.set(true)
                 onThresholdReached(usedMemory.mb, totalMemory.mb)
             }
         } else {
-            isMemoryThresholdReached = false
+            isMemoryThresholdReached.set(false)
         }
         updateMemory(usedMemory)
     }
