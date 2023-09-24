@@ -56,7 +56,7 @@ internal class MemoryMonitor(val configuration: BlueTriangleConfiguration) : Met
         val mostRecentTimer = Tracker.instance?.getMostRecentTimer()
         val crashHitsTimer: Timer = Timer().startWithoutPerformanceMonitor()
         crashHitsTimer.setPageName(
-            mostRecentTimer?.getField(Timer.FIELD_PAGE_NAME)
+            mostRecentTimer?.getField(Timer.FIELD_PAGE_NAME)?.plus("Warning") //TODO: Remove "Warning" part before PR
                 ?: Tracker.BTErrorType.MemoryWarning.value
         )
         if (mostRecentTimer != null) {
