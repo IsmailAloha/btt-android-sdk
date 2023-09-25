@@ -13,9 +13,6 @@ import java.io.File
 import java.io.FileReader
 import java.io.IOException
 
-/**
- * CPU monitoring adapted from https://eng.lyft.com/monitoring-cpu-performance-of-lyfts-android-applications-4e36fafffe12
- */
 internal class CpuMonitor(configuration: BlueTriangleConfiguration) : MetricMonitor {
 
     var totalClockTicsLastCollection = 0L
@@ -51,10 +48,6 @@ internal class CpuMonitor(configuration: BlueTriangleConfiguration) : MetricMoni
     }
 
     private val cpuCoresCount = getNumberOfCPUCores()?:0L
-
-    init {
-        logger?.debug("CPU Usage: ClockSpeed: ${clockSpeedHz}Hz, CoresCount: ${cpuCoresCount}")
-    }
 
     private fun calculateAverageCpu(): Double {
         return if (cpuCount == 0L) {

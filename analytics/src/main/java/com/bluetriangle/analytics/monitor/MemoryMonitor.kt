@@ -40,7 +40,7 @@ internal class MemoryMonitor(val configuration: BlueTriangleConfiguration) : Met
         val usedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()
         logger?.debug("Used Memory: $usedMemory (${usedMemory.mb}MB), Total Memory: $totalMemory (${totalMemory.mb}MB)")
         if (usedMemory / totalMemory.toFloat() >= 0.8) {
-            if (!isMemoryThresholdReached) {
+            if (!isMemoryThresholdReached && configuration.isMemoryWarningEnabled) {
                 isMemoryThresholdReached = true
                 onThresholdReached(usedMemory.mb, totalMemory.mb)
             }

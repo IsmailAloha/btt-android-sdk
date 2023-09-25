@@ -67,15 +67,10 @@ class DemoApplication : Application() {
         configuration.isPerformanceMonitorEnabled = true
         configuration.performanceMonitorIntervalMs = 500
         configuration.isLaunchTimeEnabled = true
+        configuration.isMemoryWarningEnabled = true
         tracker = init(this, configuration)
 
         tracker!!.setSessionTrafficSegmentName("Demo Traffic Segment")
-    }
-
-    override fun onTrimMemory(level: Int) {
-        super.onTrimMemory(level)
-        val warningLevelType = level.trimLevelString()
-        Log.d("DemoApplicationTag", warningLevelType)
     }
 
     private fun checkANRTestOnAppCreate() {
