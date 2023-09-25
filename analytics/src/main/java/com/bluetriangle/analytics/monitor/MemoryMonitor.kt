@@ -38,7 +38,7 @@ internal class MemoryMonitor(val configuration: BlueTriangleConfiguration) : Met
 
     override fun onBeforeSleep() {
         val usedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()
-        logger?.debug("Used Memory: $usedMemory, Total Memory: $totalMemory")
+        logger?.debug("Used Memory: $usedMemory (${usedMemory.mb}MB), Total Memory: $totalMemory (${totalMemory.mb}MB)")
         if (usedMemory / totalMemory.toFloat() >= 0.8) {
             if (!isMemoryThresholdReached) {
                 isMemoryThresholdReached = true
@@ -57,7 +57,7 @@ internal class MemoryMonitor(val configuration: BlueTriangleConfiguration) : Met
         val mostRecentTimer = Tracker.instance?.getMostRecentTimer()
         val crashHitsTimer: Timer = Timer().startWithoutPerformanceMonitor()
         crashHitsTimer.setPageName(
-            mostRecentTimer?.getField(Timer.FIELD_PAGE_NAME)?.plus("Warning") ?: Tracker.BTErrorType.MemoryWarning.value
+            mostRecentTimer?.getField(Timer.FIELD_PAGE_NAME) ?: Tracker.BTErrorType.MemoryWarning.value
         )
         if (mostRecentTimer != null) {
             mostRecentTimer.generateNativeAppProperties()
