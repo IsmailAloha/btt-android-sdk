@@ -57,7 +57,7 @@ internal class MemoryMonitor(val configuration: BlueTriangleConfiguration) : Met
         val mostRecentTimer = Tracker.instance?.getMostRecentTimer()
         val crashHitsTimer: Timer = Timer().startWithoutPerformanceMonitor()
         crashHitsTimer.setPageName(
-            mostRecentTimer?.getField(Timer.FIELD_PAGE_NAME) ?: Tracker.BTErrorType.MemoryWarning.value
+            mostRecentTimer?.getField(Timer.FIELD_PAGE_NAME)?.plus("Warning") ?: Tracker.BTErrorType.MemoryWarning.value
         )
         if (mostRecentTimer != null) {
             mostRecentTimer.generateNativeAppProperties()
