@@ -31,38 +31,33 @@ internal class MemoryMonitor(val configuration: BlueTriangleConfiguration) : Met
         } else cumulativeMemory / memoryCount
     }
 
-    private var isMemoryThresholdReached:AtomicBoolean = AtomicBoolean(false)
+    private var isMemoryThresholdReached = false
 
     private val Long.mb: Long
         get() = this / (1024 * 1024)
 
     override fun onBeforeSleep() {
-        synchronized(this) {
-            val usedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()
-            logger?.debug("Used Memory: $usedMemory, Total Memory: $totalMemory, isMemoryThresholdReached: ${isMemoryThresholdReached.get()}")
-            if (usedMemory / totalMemory.toFloat() >= 0.8) {
-                if (!isMemoryThresholdReached.get()) {
-                    logger?.debug("Used isMemoryThresholdReached set to True, oldValue: ${isMemoryThresholdReached.get()}")
-                    isMemoryThresholdReached.set(true)
-                    onThresholdReached(usedMemory.mb, totalMemory.mb)
-                }
-            } else {
-                logger?.debug("Used isMemoryThresholdReached set to False")
-                isMemoryThresholdReached.set(false)
+        val usedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()
+        logger?.debug("Used Memory: $usedMemory, Total Memory: $totalMemory")
+        if (usedMemory / totalMemory.toFloat() >= 0.8) {
+            if (!isMemoryThresholdReached) {
+                isMemoryThresholdReached = true
+                onThresholdReached(usedMemory.mb, totalMemory.mb)
             }
-            updateMemory(usedMemory)
+        } else {
+            isMemoryThresholdReached = false
         }
+        updateMemory(usedMemory)
     }
 
-    private fun onThresholdReached(usedMemory:Long, totalMemory:Long) {
+    private fun onThresholdReached(usedMemory: Long, totalMemory: Long) {
         configuration.logger?.debug("Memory Warning recieved: Used: ${usedMemory}MB, Total: ${totalMemory}MB")
 
         val timeStamp = System.currentTimeMillis().toString()
         val mostRecentTimer = Tracker.instance?.getMostRecentTimer()
         val crashHitsTimer: Timer = Timer().startWithoutPerformanceMonitor()
         crashHitsTimer.setPageName(
-            mostRecentTimer?.getField(Timer.FIELD_PAGE_NAME)?.plus("Warning") //TODO: Remove "Warning" part before PR
-                ?: Tracker.BTErrorType.MemoryWarning.value
+            mostRecentTimer?.getField(Timer.FIELD_PAGE_NAME) ?: Tracker.BTErrorType.MemoryWarning.value
         )
         if (mostRecentTimer != null) {
             mostRecentTimer.generateNativeAppProperties()
