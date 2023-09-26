@@ -12,6 +12,9 @@ import com.bluetriangle.android.demo.tests.ANRTestFactory
 import com.bluetriangle.android.demo.tests.ANRTestScenario
 import com.bluetriangle.android.demo.tests.HeavyLoopTest
 import com.bluetriangle.android.demo.tests.LaunchTestScenario
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 class DemoApplication : Application() {
     private var tracker: Tracker? = null
@@ -55,6 +58,7 @@ class DemoApplication : Application() {
         if (siteId.isNullOrBlank()) return
 
         val configuration = BlueTriangleConfiguration()
+        configuration.isScreenTrackingEnabled = true
         configuration.isTrackCrashesEnabled = true
         configuration.isTrackAnrEnabled = true
         configuration.siteId = siteId
@@ -63,6 +67,7 @@ class DemoApplication : Application() {
         configuration.isPerformanceMonitorEnabled = true
         configuration.performanceMonitorIntervalMs = 500
         configuration.isLaunchTimeEnabled = true
+        configuration.isMemoryWarningEnabled = true
         tracker = init(this, configuration)
 
         tracker!!.setSessionTrafficSegmentName("Demo Traffic Segment")

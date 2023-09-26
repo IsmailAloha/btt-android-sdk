@@ -10,8 +10,8 @@ import com.bluetriangle.analytics.launchtime.LaunchTimeMonitor
 import com.bluetriangle.analytics.networkcapture.CapturedRequest
 import com.bluetriangle.analytics.networkcapture.CapturedRequestCollection
 import com.bluetriangle.analytics.screenTracking.ActivityLifecycleTracker
+import com.bluetriangle.analytics.screenTracking.BTTScreenLifecycleTracker
 import com.bluetriangle.analytics.screenTracking.FragmentLifecycleTracker
-import com.bluetriangle.analytics.screenTracking.BTTScreenLifecyleTracker
 import com.bluetriangle.analytics.utility.logD
 import java.io.File
 import java.lang.ref.WeakReference
@@ -62,7 +62,7 @@ class Tracker private constructor(
      */
     private val capturedRequests = ConcurrentHashMap<Long, CapturedRequestCollection>()
 
-    internal val screenTrackMonitor: BTTScreenLifecyleTracker
+    internal val screenTrackMonitor: BTTScreenLifecycleTracker
     private val activityLifecycleTracker: ActivityLifecycleTracker
 
     init {
@@ -82,13 +82,13 @@ class Tracker private constructor(
         setGlobalUserId(globalUserId)
         configuration.globalUserId = globalUserId
 
-        val sessionId = Utils.generateRandomId()
+        val sessionId = configuration.sessionId?:Utils.generateRandomId()
         Log.d("SessionID", sessionId)
         setSessionId(sessionId)
         configuration.sessionId = sessionId
 
         trackerExecutor = TrackerExecutor(configuration)
-        screenTrackMonitor = BTTScreenLifecyleTracker(configuration.isScreenTrackingEnabled)
+        screenTrackMonitor = BTTScreenLifecycleTracker(configuration.isScreenTrackingEnabled)
 
         val fragmentLifecycleTracker = FragmentLifecycleTracker(screenTrackMonitor)
         activityLifecycleTracker = ActivityLifecycleTracker(
@@ -188,6 +188,7 @@ class Tracker private constructor(
     fun submitCapturedRequest(capturedRequest: CapturedRequest?) {
         if (configuration.shouldSampleNetwork) {
             getMostRecentTimer()?.let { timer ->
+                configuration.logger?.debug("Network Request Captured: $capturedRequest for $timer")
                 capturedRequest?.setNavigationStart(timer.start)
                 if (capturedRequests.containsKey(timer.start)) {
                     capturedRequests[timer.start]!!.add(capturedRequest!!)

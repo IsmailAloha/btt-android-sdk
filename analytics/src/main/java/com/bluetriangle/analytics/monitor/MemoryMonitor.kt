@@ -5,9 +5,7 @@ import com.bluetriangle.analytics.CrashRunnable
 import com.bluetriangle.analytics.PerformanceReport
 import com.bluetriangle.analytics.Timer
 import com.bluetriangle.analytics.Tracker
-import com.bluetriangle.analytics.Utils
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
+import java.util.concurrent.atomic.AtomicBoolean
 
 internal class MemoryMonitor(val configuration: BlueTriangleConfiguration) : MetricMonitor {
 
@@ -39,10 +37,10 @@ internal class MemoryMonitor(val configuration: BlueTriangleConfiguration) : Met
         get() = this / (1024 * 1024)
 
     override fun onBeforeSleep() {
-        val usedMemory = Runtime.getRuntime().totalMemory()
-        logger?.debug("Used Memory: $usedMemory, Total Memory: $totalMemory")
+        val usedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()
+        logger?.debug("Used Memory: $usedMemory (${usedMemory.mb}MB), Total Memory: $totalMemory (${totalMemory.mb}MB)")
         if (usedMemory / totalMemory.toFloat() >= 0.8) {
-            if (!isMemoryThresholdReached) {
+            if (!isMemoryThresholdReached && configuration.isMemoryWarningEnabled) {
                 isMemoryThresholdReached = true
                 onThresholdReached(usedMemory.mb, totalMemory.mb)
             }
@@ -52,17 +50,16 @@ internal class MemoryMonitor(val configuration: BlueTriangleConfiguration) : Met
         updateMemory(usedMemory)
     }
 
-    private fun onThresholdReached(usedMemory:Long, totalMemory:Long) {
+    private fun onThresholdReached(usedMemory: Long, totalMemory: Long) {
         configuration.logger?.debug("Memory Warning recieved: Used: ${usedMemory}MB, Total: ${totalMemory}MB")
 
         val timeStamp = System.currentTimeMillis().toString()
         val mostRecentTimer = Tracker.instance?.getMostRecentTimer()
         val crashHitsTimer: Timer = Timer().startWithoutPerformanceMonitor()
+        crashHitsTimer.setPageName(
+            mostRecentTimer?.getField(Timer.FIELD_PAGE_NAME) ?: Tracker.BTErrorType.MemoryWarning.value
+        )
         if (mostRecentTimer != null) {
-            crashHitsTimer.setPageName(
-                mostRecentTimer.getField(Timer.FIELD_PAGE_NAME)
-                    ?: Tracker.BTErrorType.MemoryWarning.value
-            )
             mostRecentTimer.generateNativeAppProperties()
             crashHitsTimer.nativeAppProperties = mostRecentTimer.nativeAppProperties
         }

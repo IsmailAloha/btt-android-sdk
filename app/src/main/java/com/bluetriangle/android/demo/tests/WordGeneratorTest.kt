@@ -27,9 +27,9 @@ class WordGeneratorTest(val word:String = "unknown", val interval: Long = 10L):B
         startTime: Long,
         interval: Long
     ):Boolean {
-        if(index == word.length) return com.bluetriangle.android.demo.resultEqualsWord(result, word)
+        if(index == word.length) return resultEqualsWord(result, word)
 
-        for(alphabet in com.bluetriangle.android.demo.alphabets) {
+        for(alphabet in alphabets) {
             if(System.currentTimeMillis() - startTime > (interval * 1000)) return false
             result[index] = alphabet
             if(generateWord(word, result, index+1, startTime, interval)) return true

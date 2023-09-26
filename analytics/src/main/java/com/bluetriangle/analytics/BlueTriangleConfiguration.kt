@@ -89,6 +89,8 @@ class BlueTriangleConfiguration {
     var isTrackCrashesEnabled = false
 
     var isPerformanceMonitorEnabled = false
+    var isMemoryWarningEnabled = false
+
     var performanceMonitorIntervalMs = TimeUnit.SECONDS.toMillis(1)
         set(value) {
             field = value.coerceAtLeast(500L)
