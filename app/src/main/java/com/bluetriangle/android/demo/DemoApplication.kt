@@ -68,12 +68,6 @@ class DemoApplication : Application() {
         tracker!!.setSessionTrafficSegmentName("Demo Traffic Segment")
     }
 
-    override fun onTrimMemory(level: Int) {
-        super.onTrimMemory(level)
-        val warningLevelType = level.trimLevelString()
-        Log.d("DemoApplicationTag", warningLevelType)
-    }
-
     private fun checkANRTestOnAppCreate() {
         val anrTestScenarioId = sharedPreferencesMgr.getInt("ANRTestScenario")
         val anrTestId = sharedPreferencesMgr.getInt("ANRTest")
