@@ -6,15 +6,11 @@ import androidx.appcompat.app.AppCompatDelegate
 import com.bluetriangle.analytics.BlueTriangleConfiguration
 import com.bluetriangle.analytics.Tracker
 import com.bluetriangle.analytics.Tracker.Companion.init
-import com.bluetriangle.analytics.trimLevelString
 import com.bluetriangle.android.demo.tests.ANRTest
 import com.bluetriangle.android.demo.tests.ANRTestFactory
 import com.bluetriangle.android.demo.tests.ANRTestScenario
 import com.bluetriangle.android.demo.tests.HeavyLoopTest
 import com.bluetriangle.android.demo.tests.LaunchTestScenario
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
 
 class DemoApplication : Application() {
     private var tracker: Tracker? = null
