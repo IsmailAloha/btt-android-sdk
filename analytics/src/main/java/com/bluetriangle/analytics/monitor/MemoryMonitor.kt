@@ -118,7 +118,7 @@ internal class MemoryMonitor(val configuration: BlueTriangleConfiguration) : Met
             onThresholdReached(it)
         }
         if(BuildConfig.DEBUG) {
-            logger?.debug("MemoryUsed in $pageName : $memoryUsed, Max: ${maxMemory}, Min: ${minMemory}")
+            logger?.debug("$pageName : MemoryUsed in $pageName : $memoryUsed, Max: ${maxMemory}, Min: ${minMemory}")
         }
     }
 }
