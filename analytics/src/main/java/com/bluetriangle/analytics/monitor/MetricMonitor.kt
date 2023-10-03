@@ -1,5 +1,7 @@
 package com.bluetriangle.analytics.monitor
 
+import com.bluetriangle.analytics.Timer
+
 internal interface MetricMonitor {
 
     val metricFields: Map<String, String>
@@ -8,7 +10,7 @@ internal interface MetricMonitor {
 
     fun onAfterSleep()
 
-    fun onTimerSubmit(pageName: String) {
+    fun onTimerSubmit(timer: Timer) {
 
     }
 

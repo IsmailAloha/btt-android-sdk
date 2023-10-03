@@ -19,9 +19,9 @@ class PerformanceMonitor(configuration: BlueTriangleConfiguration) : Thread(THRE
         metricMonitors.add(MainThreadMonitor(configuration))
     }
 
-    fun onTimerSubmit(pageName:String) {
+    fun onTimerSubmit(timer: Timer) {
         metricMonitors.forEach {
-            it.onTimerSubmit(pageName)
+            it.onTimerSubmit(timer)
         }
     }
 

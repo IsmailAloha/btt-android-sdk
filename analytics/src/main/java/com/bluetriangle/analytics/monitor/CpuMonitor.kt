@@ -7,6 +7,8 @@ import android.system.OsConstants
 import com.bluetriangle.analytics.BlueTriangleConfiguration
 import com.bluetriangle.analytics.BuildConfig
 import com.bluetriangle.analytics.PerformanceReport
+import com.bluetriangle.analytics.Timer
+import com.bluetriangle.analytics.Timer.Companion.FIELD_PAGE_NAME
 import com.bluetriangle.analytics.utility.getNumberOfCPUCores
 import java.io.BufferedReader
 import java.io.File
@@ -155,9 +157,10 @@ internal class CpuMonitor(configuration: BlueTriangleConfiguration) : MetricMoni
         return uTime + sTime + cuTime + csTime
     }
 
-    override fun onTimerSubmit(pageName: String) {
-        super.onTimerSubmit(pageName)
-        if(BuildConfig.DEBUG) {
+    override fun onTimerSubmit(timer: Timer) {
+        super.onTimerSubmit(timer)
+        if (BuildConfig.DEBUG) {
+            val pageName = timer.getField(FIELD_PAGE_NAME)
             logger?.debug("CPUUsed in $pageName : $cpuUsed")
         }
     }
