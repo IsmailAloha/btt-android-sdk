@@ -8,4 +8,8 @@ internal interface MetricMonitor {
 
     fun onAfterSleep()
 
+    fun onTimerSubmit(pageName: String) {
+
+    }
+
 }

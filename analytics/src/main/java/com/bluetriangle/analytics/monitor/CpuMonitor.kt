@@ -4,8 +4,8 @@ import android.os.Build
 import android.os.SystemClock
 import android.system.Os
 import android.system.OsConstants
-import android.util.Log
 import com.bluetriangle.analytics.BlueTriangleConfiguration
+import com.bluetriangle.analytics.BuildConfig
 import com.bluetriangle.analytics.PerformanceReport
 import com.bluetriangle.analytics.utility.getNumberOfCPUCores
 import java.io.BufferedReader
@@ -40,6 +40,7 @@ internal class CpuMonitor(configuration: BlueTriangleConfiguration) : MetricMoni
     private var maxCpu = 0.0
     private var cumulativeCpu = 0.0
     private var cpuCount: Long = 0
+    private var cpuUsed = arrayListOf<Double>()
 
     private val clockSpeedHz = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
         Os.sysconf(OsConstants._SC_CLK_TCK)
@@ -62,6 +63,7 @@ internal class CpuMonitor(configuration: BlueTriangleConfiguration) : MetricMoni
         if (cpu > maxCpu) {
             maxCpu = cpu
         }
+        cpuUsed.add(cpu)
         cumulativeCpu += cpu
         cpuCount++
     }
@@ -151,5 +153,12 @@ internal class CpuMonitor(configuration: BlueTriangleConfiguration) : MetricMoni
         val cuTime = statsList[15].toLong()
         val csTime = statsList[16].toLong()
         return uTime + sTime + cuTime + csTime
+    }
+
+    override fun onTimerSubmit(pageName: String) {
+        super.onTimerSubmit(pageName)
+        if(BuildConfig.DEBUG) {
+            logger?.debug("CPUUsed in $pageName : $cpuUsed")
+        }
     }
 }

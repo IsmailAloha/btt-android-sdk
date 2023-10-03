@@ -1,5 +1,6 @@
 package com.bluetriangle.android.demo.kotlin
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.bluetriangle.analytics.Timer
@@ -33,4 +34,28 @@ class MemoryTestViewModel : ViewModel() {
             MemoryHeapTest(30).run()
         }.start()
     }
+
+    class MemoryBlock {
+        private val memoryBlock = ByteArray((Runtime.getRuntime().maxMemory() * 0.2).toInt())
+
+        init {
+            Log.d("MemoryBlock", "Used: ${memoryBlock.size}")
+        }
+    }
+
+    private var memoryBlock: ArrayList<MemoryBlock>? = null
+
+    fun useMemory() {
+        if(memoryBlock == null) {
+            memoryBlock = arrayListOf()
+        }
+        memoryBlock?.add(MemoryBlock())
+    }
+
+    fun clearMemory() {
+        memoryBlock?.clear()
+        memoryBlock = null
+        Runtime.getRuntime().gc()
+    }
+
 }

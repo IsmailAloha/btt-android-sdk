@@ -311,6 +311,9 @@ class Timer : Parcelable {
      */
     fun isInteractive(): Boolean = start > 0 && interactive > 0
 
+    fun onSubmit() {
+        performanceMonitor?.onTimerSubmit(getField(FIELD_PAGE_NAME)?:"Unknown")
+    }
     /**
      * Convenience method to submit this timer to the global tracker
      */

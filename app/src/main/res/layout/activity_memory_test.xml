@@ -55,6 +55,26 @@
             app:layout_constraintStart_toEndOf="@+id/btnAnrTestRun"
             app:layout_constraintTop_toTopOf="@+id/btnAnrTestRun" />
 
+        <Button
+            android:id="@+id/use_memory"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Use Memory"
+            android:onClick="@{(v)->viewModel.useMemory()}"
+            app:layout_constraintEnd_toEndOf="@+id/btnAnrTestRun"
+            app:layout_constraintStart_toStartOf="@+id/btnAnrTestRun"
+            app:layout_constraintTop_toBottomOf="@+id/btnAnrTestRun" />
+
+        <Button
+            android:id="@+id/clear_memory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Clear Memory"
+            android:onClick="@{(v)->viewModel.clearMemory()}"
+            app:layout_constraintEnd_toEndOf="@+id/button"
+            app:layout_constraintStart_toStartOf="@+id/button"
+            app:layout_constraintTop_toBottomOf="@+id/button" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

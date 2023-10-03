@@ -1,11 +1,12 @@
 package com.bluetriangle.analytics.monitor
 
 import com.bluetriangle.analytics.BlueTriangleConfiguration
+import com.bluetriangle.analytics.BuildConfig
 import com.bluetriangle.analytics.CrashRunnable
 import com.bluetriangle.analytics.PerformanceReport
 import com.bluetriangle.analytics.Timer
 import com.bluetriangle.analytics.Tracker
-import java.util.concurrent.atomic.AtomicBoolean
+import java.lang.RuntimeException
 
 internal class MemoryMonitor(val configuration: BlueTriangleConfiguration) : MetricMonitor {
 
@@ -24,6 +25,8 @@ internal class MemoryMonitor(val configuration: BlueTriangleConfiguration) : Met
     private var cumulativeMemory: Long = 0
     private var memoryCount: Long = 0
     private val logger = configuration.logger
+    private var memoryWarningException: MemoryWarningException? = null
+    private var memoryUsed = arrayListOf<Long>()
 
     private fun calculateAverageMemory(): Long {
         return if (memoryCount == 0L) {
@@ -36,13 +39,21 @@ internal class MemoryMonitor(val configuration: BlueTriangleConfiguration) : Met
     private val Long.mb: Long
         get() = this / (1024 * 1024)
 
+    class MemoryWarningException(val usedMemory: Long, val totalMemory: Long) : RuntimeException("Critical memory usage detected. App using ${usedMemory}MB of App's limit ${totalMemory}MB") {
+        var count: Int = 1
+    }
+
     override fun onBeforeSleep() {
         val usedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()
         logger?.debug("Used Memory: $usedMemory (${usedMemory.mb}MB), Total Memory: $totalMemory (${totalMemory.mb}MB)")
         if (usedMemory / totalMemory.toFloat() >= 0.8) {
             if (!isMemoryThresholdReached && configuration.isMemoryWarningEnabled) {
                 isMemoryThresholdReached = true
-                onThresholdReached(usedMemory.mb, totalMemory.mb)
+                if(memoryWarningException == null) {
+                    memoryWarningException = MemoryWarningException(usedMemory.mb, totalMemory.mb)
+                } else {
+                    memoryWarningException?.count = (memoryWarningException?.count?:1) + 1
+                }
             }
         } else {
             isMemoryThresholdReached = false
@@ -50,14 +61,15 @@ internal class MemoryMonitor(val configuration: BlueTriangleConfiguration) : Met
         updateMemory(usedMemory)
     }
 
-    private fun onThresholdReached(usedMemory: Long, totalMemory: Long) {
-        configuration.logger?.debug("Memory Warning recieved: Used: ${usedMemory}MB, Total: ${totalMemory}MB")
+    private fun onThresholdReached(memoryWarningException: MemoryWarningException) {
+        configuration.logger?.debug("Memory Warning received ${memoryWarningException.count} times: Used: ${memoryWarningException.usedMemory}MB, Total: ${memoryWarningException.totalMemory}MB")
 
         val timeStamp = System.currentTimeMillis().toString()
         val mostRecentTimer = Tracker.instance?.getMostRecentTimer()
         val crashHitsTimer: Timer = Timer().startWithoutPerformanceMonitor()
         crashHitsTimer.setPageName(
-            mostRecentTimer?.getField(Timer.FIELD_PAGE_NAME) ?: Tracker.BTErrorType.MemoryWarning.value
+            mostRecentTimer?.getField(Timer.FIELD_PAGE_NAME)
+                ?: Tracker.BTErrorType.MemoryWarning.value
         )
         if (mostRecentTimer != null) {
             mostRecentTimer.generateNativeAppProperties()
@@ -69,10 +81,11 @@ internal class MemoryMonitor(val configuration: BlueTriangleConfiguration) : Met
             val thread = Thread(
                 CrashRunnable(
                     configuration,
-                    "Critical memory usage detected. App using ${usedMemory}MB of App's limit ${totalMemory}MB",
+                    memoryWarningException.message?:"",
                     timeStamp,
                     crashHitsTimer,
-                    Tracker.BTErrorType.MemoryWarning
+                    Tracker.BTErrorType.MemoryWarning,
+                    errorCount = memoryWarningException.count
                 )
             )
             thread.start()
@@ -89,11 +102,22 @@ internal class MemoryMonitor(val configuration: BlueTriangleConfiguration) : Met
         if (memory > maxMemory) {
             maxMemory = memory
         }
+        memoryUsed.add(memory)
         cumulativeMemory += memory
         memoryCount++
     }
 
     override fun onAfterSleep() {
 
+    }
+
+    override fun onTimerSubmit(pageName: String) {
+        super.onTimerSubmit(pageName)
+        memoryWarningException?.let {
+            onThresholdReached(it)
+        }
+        if(BuildConfig.DEBUG) {
+            logger?.debug("MemoryUsed in $pageName : $memoryUsed, Max: ${maxMemory}, Min: ${minMemory}")
+        }
     }
 }
