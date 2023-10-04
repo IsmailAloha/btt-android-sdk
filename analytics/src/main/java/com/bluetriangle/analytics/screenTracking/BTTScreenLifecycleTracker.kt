@@ -5,7 +5,7 @@ import com.bluetriangle.analytics.Timer
 import com.bluetriangle.analytics.model.Screen
 import com.bluetriangle.analytics.utility.logD
 
-internal class BTTScreenLifecycleTracker(private val screenTrackingEnabled: Boolean) : ScreenLifecycleTracker {
+class BTTScreenLifecycleTracker(private val screenTrackingEnabled: Boolean) : ScreenLifecycleTracker {
 
     private var loadTime = hashMapOf<String, Long>()
     private var viewTime = hashMapOf<String, Long>()

@@ -61,7 +61,7 @@ class Tracker private constructor(
      */
     private val capturedRequests = ConcurrentHashMap<Long, CapturedRequestCollection>()
 
-    internal val screenTrackMonitor: BTTScreenLifecycleTracker
+    val screenTrackMonitor: BTTScreenLifecycleTracker
     private val activityLifecycleTracker: ActivityLifecycleTracker
 
     init {
