@@ -121,7 +121,7 @@ internal class MemoryMonitor(val configuration: BlueTriangleConfiguration) : Met
         memoryWarningException?.let {
             onThresholdReached(timer, it)
         }
-        if (BuildConfig.DEBUG) {
+        if (configuration.isDebug) {
             val pageName = timer.getField(FIELD_PAGE_NAME)?:""
             logger?.debug("$pageName : MemoryUsed in $pageName : $memoryUsed, Max: ${maxMemory}, Min: ${minMemory}")
         }

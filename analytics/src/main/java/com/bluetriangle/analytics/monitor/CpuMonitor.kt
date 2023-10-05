@@ -20,6 +20,8 @@ internal class CpuMonitor(configuration: BlueTriangleConfiguration) : MetricMoni
     var totalClockTicsLastCollection = 0L
     var elapsedTimeLastCollection = 0.0
 
+    var isDebug = configuration.isDebug
+
     companion object {
         /**
          * /proc/pid/stat file contains the information about the CPU usage for the process with pid = [pid]
@@ -159,7 +161,7 @@ internal class CpuMonitor(configuration: BlueTriangleConfiguration) : MetricMoni
 
     override fun onTimerSubmit(timer: Timer) {
         super.onTimerSubmit(timer)
-        if (BuildConfig.DEBUG) {
+        if (isDebug) {
             val pageName = timer.getField(FIELD_PAGE_NAME)
             logger?.debug("CPUUsed in $pageName : $cpuUsed")
         }
