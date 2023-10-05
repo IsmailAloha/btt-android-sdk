@@ -163,7 +163,7 @@ internal class CpuMonitor(configuration: BlueTriangleConfiguration) : MetricMoni
         super.onTimerSubmit(timer)
         if (isDebug) {
             val pageName = timer.getField(FIELD_PAGE_NAME)
-            logger?.debug("CPUUsed in $pageName : $cpuUsed")
+            logger?.debug("CPU Samples for $pageName : $cpuUsed")
         }
     }
 }

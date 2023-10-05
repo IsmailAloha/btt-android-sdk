@@ -123,7 +123,7 @@ internal class MemoryMonitor(val configuration: BlueTriangleConfiguration) : Met
         }
         if (configuration.isDebug) {
             val pageName = timer.getField(FIELD_PAGE_NAME)?:""
-            logger?.debug("$pageName : MemoryUsed in $pageName : $memoryUsed, Max: ${maxMemory}, Min: ${minMemory}")
+            logger?.debug("Memory Samples for $pageName : $memoryUsed")
         }
     }
 }
