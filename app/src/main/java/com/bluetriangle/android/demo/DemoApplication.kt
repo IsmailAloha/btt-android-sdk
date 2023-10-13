@@ -57,7 +57,6 @@ class DemoApplication : Application() {
         if (siteId.isNullOrBlank()) return
 
         val configuration = BlueTriangleConfiguration()
-        configuration.isScreenTrackingEnabled = true
         configuration.isTrackCrashesEnabled = true
         configuration.isTrackAnrEnabled = true
         configuration.siteId = siteId

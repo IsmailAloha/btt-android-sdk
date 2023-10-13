@@ -15,23 +15,25 @@ class HomeActivity : AppCompatActivity() {
         val binding =
             DataBindingUtil.setContentView<ActivityHomeBinding>(this, R.layout.activity_home)
 
+        binding.networkTest.setOnClickListener {
+            startActivity(NetworkTestActivity::class.java)
+        }
+
         binding.btnJavaTest.setOnClickListener {
-            startActivity(
-                Intent(
-                    this,
-                    JavaTestListActivity::class.java
-                )
-            )
+            startActivity(JavaTestListActivity::class.java)
         }
 
         binding.btnKotlinTest.setOnClickListener {
-            startActivity(
-                Intent(
-                    this,
-                    KotlinTestListActivity::class.java
-                )
-            )
+            startActivity(KotlinTestListActivity::class.java)
         }
         DemoApplication.checkLaunchTest(LaunchTestScenario.OnActivityCreate)
+    }
+
+    private fun startActivity(activityClass: Class<*>) {
+        startActivity(
+            Intent(
+                this, activityClass
+            )
+        )
     }
 }

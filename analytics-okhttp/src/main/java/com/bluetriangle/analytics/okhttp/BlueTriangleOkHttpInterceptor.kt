@@ -13,11 +13,13 @@ import java.util.*
 class BlueTriangleOkHttpInterceptor(private val configuration: BlueTriangleConfiguration) : Interceptor {
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
+        configuration.logger?.debug("---------------INSIDE INTERCEPTOR-------------------")
         if (!configuration.shouldSampleNetwork) {
             return chain.proceed(chain.request())
         }
 
         val request: Request = chain.request()
+
         val capturedRequest = CapturedRequest()
         capturedRequest.url = request.url.toString()
 
