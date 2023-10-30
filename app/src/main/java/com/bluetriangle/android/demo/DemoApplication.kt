@@ -65,6 +65,7 @@ class DemoApplication : Application() {
         configuration.networkSampleRate = 1.0
         configuration.isPerformanceMonitorEnabled = true
         configuration.isLaunchTimeEnabled = true
+        configuration.isTrackNetworkStateEnabled = true
         configuration.sessionId = SimpleDateFormat("ddMMyyyykkmm", Locale.getDefault())
             .format(Calendar.getInstance().time)
         tracker = init(this, configuration)
