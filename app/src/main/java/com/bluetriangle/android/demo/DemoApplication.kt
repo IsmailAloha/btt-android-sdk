@@ -63,6 +63,7 @@ class DemoApplication : Application() {
         configuration.isPerformanceMonitorEnabled = true
         configuration.performanceMonitorIntervalMs = 500
         configuration.isLaunchTimeEnabled = true
+        configuration.isTrackNetworkStateEnabled = true
         configuration.isMemoryWarningEnabled = true
         tracker = init(this, configuration)
 

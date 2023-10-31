@@ -3,6 +3,8 @@ package com.bluetriangle.analytics
 import android.os.Parcel
 import android.os.Parcelable
 import com.bluetriangle.analytics.model.NativeAppProperties
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancel
 import com.bluetriangle.analytics.utility.getNumberOfCPUCores
 
 /**
@@ -156,6 +158,16 @@ class Timer : Parcelable {
             null,
             getNumberOfCPUCores()
         )
+        Tracker.instance?.networkTimelineTracker?.let {
+            val networkSlice = it.sliceStats(
+                start,
+                if (end == 0L) System.currentTimeMillis() else end
+            )
+            nativeAppProperties.cellular = networkSlice.cellular
+            nativeAppProperties.wifi = networkSlice.wifi
+            nativeAppProperties.ethernet = networkSlice.ethernet
+            nativeAppProperties.offline = networkSlice.offline
+        }
     }
 
     /**
@@ -320,7 +332,7 @@ class Timer : Parcelable {
     fun submit() {
         val tracker = Tracker.instance
         if (tracker != null) {
-            if(nativeAppProperties.loadTime == null) {
+            if (nativeAppProperties.loadTime == null) {
                 generateNativeAppProperties()
             }
             tracker.submitTimer(this)

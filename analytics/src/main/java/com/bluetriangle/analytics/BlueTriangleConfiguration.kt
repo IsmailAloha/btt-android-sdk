@@ -1,6 +1,8 @@
 package com.bluetriangle.analytics
 
+import android.Manifest
 import android.util.Log
+import androidx.annotation.RequiresPermission
 import java.util.concurrent.TimeUnit
 
 class BlueTriangleConfiguration {
@@ -130,6 +132,14 @@ class BlueTriangleConfiguration {
      * Supported on API Level 29 and above
      */
     var isLaunchTimeEnabled: Boolean = false
+
+    /**
+     * Track the network state during Timer, Network request and errors. States include wifi, cellular, ethernet and offline.
+     * Default value is false.
+     * Requires host app to have ACCESS_NETWORK_STATE permission.
+     */
+    @RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)
+    var isTrackNetworkStateEnabled: Boolean = false
 
     companion object {
         const val DEFAULT_TRACKER_URL = "https://d.btttag.com/analytics.rcv"
