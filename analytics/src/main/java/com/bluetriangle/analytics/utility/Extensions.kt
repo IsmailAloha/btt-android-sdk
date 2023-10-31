@@ -9,6 +9,8 @@ import android.net.NetworkCapabilities
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.annotation.RequiresPermission
+import android.system.Os
+import android.system.OsConstants
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager.FragmentLifecycleCallbacks
@@ -123,3 +125,9 @@ internal val BTTNetworkState.value:String
             else -> ""
         }
     }
+
+fun getNumberOfCPUCores() = if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+    Os.sysconf(OsConstants._SC_NPROCESSORS_CONF)
+} else {
+    null
+}

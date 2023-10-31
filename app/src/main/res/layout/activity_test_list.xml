@@ -120,6 +120,18 @@
                 android:layout_height="wrap_content"
                 android:text="ANR Test" />
 
+            <Button
+                android:id="@+id/cpu_test"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="CPU Test" />
+
+            <Button
+                android:id="@+id/memory_test"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Memory Test" />
+
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
