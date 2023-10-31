@@ -63,6 +63,13 @@ class KotlinTestListActivity : AppCompatActivity() {
         binding.buttonAnr.setOnClickListener {
             launchAnrActivity(ANRTestScenario.Unknown, ANRTest.Unknown)
         }
+        binding.cpuTest.setOnClickListener {
+            startActivity(Intent(this, CPUTestActivity::class.java))
+        }
+
+        binding.memoryTest.setOnClickListener {
+            startActivity(Intent(this, MemoryTestActivity::class.java))
+        }
         binding.buttonLaunchGallery.setOnClickListener {
             startActivity(Intent.createChooser(Intent(Intent.ACTION_PICK).apply {
                 type = "image/*"

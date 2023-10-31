@@ -3,6 +3,7 @@ package com.bluetriangle.analytics
 import android.os.Parcel
 import android.os.Parcelable
 import com.bluetriangle.analytics.model.NativeAppProperties
+import com.bluetriangle.analytics.utility.getNumberOfCPUCores
 
 /**
  * A timer instance that can be started, marked interactive, and ended.
@@ -152,7 +153,8 @@ class Timer : Parcelable {
             null,
             null,
             performanceMonitor?.maxMainThreadUsage,
-            null
+            null,
+            getNumberOfCPUCores()
         )
     }
 
@@ -309,6 +311,9 @@ class Timer : Parcelable {
      */
     fun isInteractive(): Boolean = start > 0 && interactive > 0
 
+    fun onSubmit() {
+        performanceMonitor?.onTimerSubmit(this)
+    }
     /**
      * Convenience method to submit this timer to the global tracker
      */

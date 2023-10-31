@@ -86,10 +86,28 @@ class BlueTriangleConfiguration {
             return field
         }
 
+    /**
+     * Enable or Disable automatic crash detection and reporting
+     */
     var isTrackCrashesEnabled = false
 
+    /**
+     * Enable or disable monitoring and reporting performance metrics
+     */
     var isPerformanceMonitorEnabled = false
+
+    /**
+     * Enable or disable memory warning detection and reporting
+     */
+    var isMemoryWarningEnabled = false
+
+    /**
+     * Set the sampling interval for performance monitoring in milliseconds
+     */
     var performanceMonitorIntervalMs = TimeUnit.SECONDS.toMillis(1)
+        set(value) {
+            field = value.coerceAtLeast(500L)
+        }
 
     /**
      * Enable or disable ANR detection and sending reports to the server.
@@ -101,7 +119,16 @@ class BlueTriangleConfiguration {
      */
     var trackAnrIntervalSec = Constants.ANR_DEFAULT_INTERVAL
 
+    /**
+     * Enable or disable automatic tracking and reporting of page views for Activity and Fragments.
+     * For Jetpack compose use BttTimerEffect
+     */
     var isScreenTrackingEnabled: Boolean = false
+
+    /**
+     * Enable or disable tracking and reporting launch time.
+     * Supported on API Level 29 and above
+     */
     var isLaunchTimeEnabled: Boolean = false
 
     companion object {
