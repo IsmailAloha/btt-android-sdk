@@ -190,9 +190,10 @@ internal class CrashRunnable(
             "time" to timeStamp,
         )
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        val netStateMonitor = Tracker.instance?.networkStateMonitor
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && netStateMonitor != null) {
             crashReport[Timer.FIELD_NATIVE_APP] = mapOf(
-                CapturedRequest.FIELD_NETWORK_STATE to Tracker.instance?.networkStateMonitor?.state?.value?.value
+                CapturedRequest.FIELD_NETWORK_STATE to netStateMonitor.state.value.value
             )
         }
 
