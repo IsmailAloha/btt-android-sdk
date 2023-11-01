@@ -7,7 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.bluetriangle.analytics.Timer
 import com.bluetriangle.android.demo.tests.BTTTestCase
 import com.bluetriangle.android.demo.tests.IOOperationsTest
-import com.bluetriangle.android.demo.tests.InfiniteLoopTest
+import com.bluetriangle.android.demo.tests.InfiniteLoop
+import com.bluetriangle.android.demo.tests.InfiniteLoopWithDelay
 import com.bluetriangle.android.demo.tests.UIOperationsTest
 import com.bluetriangle.android.demo.tests.WordGeneratorTest
 import kotlinx.coroutines.CoroutineDispatcher
@@ -20,7 +21,8 @@ class CPUTestViewModel : ViewModel() {
     val cpuThread = MutableLiveData(CPUThread.Main)
 
     enum class CPUTask(val testCase: BTTTestCase) {
-        InfiniteLoop(InfiniteLoopTest(20L)),
+        InfiniteLoop(InfiniteLoop(20L)),
+        InfiniteLoopWithDelay(InfiniteLoopWithDelay(20L)),
         WordGenerator(WordGeneratorTest("unconscious", 60L)),
         IOOperations(IOOperationsTest(60L)),
         UIOperations(UIOperationsTest(60L))
