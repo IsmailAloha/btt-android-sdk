@@ -443,6 +443,10 @@ class Tracker private constructor(
         }
     }
 
+    fun trackError(message: String?) {
+
+    }
+
     /**
      * Manually track an error exception caught by your code
      *
