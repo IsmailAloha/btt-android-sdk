@@ -443,8 +443,13 @@ class Tracker private constructor(
         }
     }
 
-    fun trackError(message: String?) {
-
+    fun trackError(message: String) {
+        trackException(message, object:Throwable() {
+            override fun fillInStackTrace(): Throwable {
+                stackTrace = arrayOf()
+                return this
+            }
+        })
     }
 
     /**

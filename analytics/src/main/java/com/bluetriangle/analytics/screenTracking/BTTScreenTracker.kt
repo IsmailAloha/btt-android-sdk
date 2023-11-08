@@ -4,9 +4,11 @@ import com.bluetriangle.analytics.Tracker
 import com.bluetriangle.analytics.model.Screen
 import com.bluetriangle.analytics.model.ScreenType
 
-class BTTScreenTracker(private val pageName: String, private val screenType: String = "Manual") {
+class BTTScreenTracker(private val pageName: String) {
 
     private val id = "${pageName}#${System.currentTimeMillis()}"
+    var screenType: String = ""
+
     fun onLoadStarted() {
         Tracker.instance?.screenTrackMonitor?.onLoadStarted(Screen(
             id,

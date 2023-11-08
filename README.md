@@ -82,7 +82,8 @@ There are two possible ways to use any configuration:
 1. **Programmatically**<br/>
    For each configuration, there is a property in the `BlueTriangleConfiguration`. To apply configuration
    programmatically, set the corresponding property while initializing the
-   SDK. [See Initialization](#initializing-the-tracker)
+   SDK. [See Initialization](#initializing-the-tracker).
+
    For instance, to enable logging programmatically, the initialization code will look like below:
 
    ```kotlin
@@ -95,14 +96,13 @@ There are two possible ways to use any configuration:
    To provide the configuration in AndroidManifest.xml, add `<meta-data>` tags inside the `<application>` tag as
    follows:
 
-```xml
-
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <application>
-        <meta-data android:name="<configuration-name>" android:value="<configuration-value>"/>
-    </application>
-</manifest>
-```
+   ```xml
+   <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+       <application>
+           <meta-data android:name="<configuration-name>" android:value="<configuration-value>"/>
+       </application>
+   </manifest>
+   ```
 
 > **Note:** <br/>
 > If you provide configuration both in AndroidManifest.xml and through BlueTriangleConfiguration object, then
@@ -123,21 +123,20 @@ final Timer timer=new Timer("Page Name","Traffic Segment Name").start();
 // do work...
 
 // optionally, mark the timer as interactive
-        timer.interactive();
+timer.interactive();
 
 // maybe set a field
-        timer.setCartValue(99.99);
+timer.setCartValue(99.99);
 
 // do some more work
 
 // end the timer and submit
-        timer.end().submit();
+timer.end().submit();
 
 // or end the timer, set fields such as brand value, and finally submit the timer.
-
-        timer.end();
-        timer.setBrandValue(99.99);
-        timer.submit();
+timer.end();
+timer.setBrandValue(99.99);
+timer.submit();
 ```
 
 Timers implement `Parcelable` to allow timers to be passed via `Bundle` such as between activities
@@ -147,12 +146,12 @@ in an `Intent`.
 // MainActivity.java
 final Timer timer=new Timer("Next Page","Android Traffic").start();
 final Intent intent=new Intent(this,NextActivity.class);
-        intent.putExtra(Timer.EXTRA_TIMER,timer);
-        startActivity(intent);
+intent.putExtra(Timer.EXTRA_TIMER,timer);
+startActivity(intent);
 
 // NextActivity.java
 final Timer timer=getIntent().getParcelableExtra(Timer.EXTRA_TIMER);
-        timer.end().submit();
+timer.end().submit();
 ```
 
 When a timer is submitted to the tracker, the tracker sets any global fields such as site ID,
@@ -220,7 +219,6 @@ configuration.trackAnrIntervalSec = 3
 or by adding the following meta-data:
 
 ```xml
-
 <meta-data android:name="com.blue-triangle.track-anr.enable" android:value="true"/>
 <meta-data android:name="com.blue-triangle.track-anr.interval-sec" android:value="5"/>
 ```
@@ -240,7 +238,6 @@ configuration.isTrackCrashesEnabled = true
 or add the following meta-data:
 
 ```xml
-
 <meta-data android:name="com.blue-triangle.track-crashes.enable" android:value="true"/>
 ```
 
@@ -268,7 +265,6 @@ configuration.networkSampleRate = 0.025
 or by adding the following meta-data in your AndroidManifest.xml:
 
 ```xml
-
 <meta-data android:name="com.blue-triangle.sample-rate.network" android:value="0.025"/>
 ```
 
@@ -324,7 +320,6 @@ occurs.
 To configure cache, add the following meta-data:
 
 ```xml
-
 <meta-data android:name="com.blue-triangle.cache.max-items" android:value="100"/>
 <meta-data android:name="com.blue-triangle.cache.max-retry-attempts" android:value="3"/>
 ```
@@ -360,7 +355,6 @@ configuration.isLaunchTimeEnabled = true
 or by adding the following meta-data in your `AndroidManifest.xml` file.
 
 ```xml
-
 <meta-data android:name="com.blue-triangle.launch-time.enable" android:value="false"/>
 ```
 
@@ -381,7 +375,6 @@ configuration.isMemoryWarningEnabled = true
 or add the following meta-data:
 
 ```xml
-
 <meta-data android:name="com.blue-triangle.memory-warning.enable" android:value="true"/>
 ```
 
