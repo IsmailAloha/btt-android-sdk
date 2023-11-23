@@ -18,7 +18,7 @@ class BTTScreenTracker(private val pageName: String) {
     }
 
     fun onLoadEnded() {
-        Tracker.instance?.screenTrackMonitor?.onLoadStarted(Screen(
+        Tracker.instance?.screenTrackMonitor?.onLoadEnded(Screen(
             id,
             pageName,
             ScreenType.Custom(screenType)
@@ -26,7 +26,7 @@ class BTTScreenTracker(private val pageName: String) {
     }
 
     fun onViewStarted() {
-        Tracker.instance?.screenTrackMonitor?.onLoadStarted(Screen(
+        Tracker.instance?.screenTrackMonitor?.onViewStarted(Screen(
             id,
             pageName,
             ScreenType.Custom(screenType)
@@ -34,7 +34,7 @@ class BTTScreenTracker(private val pageName: String) {
     }
 
     fun onViewEnded() {
-        Tracker.instance?.screenTrackMonitor?.onLoadStarted(Screen(
+        Tracker.instance?.screenTrackMonitor?.onViewEnded(Screen(
             id,
             pageName,
             ScreenType.Custom(screenType)
