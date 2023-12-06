@@ -104,9 +104,29 @@ class BlueTriangleConfiguration {
     var isScreenTrackingEnabled: Boolean = false
     var isLaunchTimeEnabled: Boolean = false
 
+    var cacheExpiryDuration = EXPIRATION_IN_MILLIS
+        set(value) {
+            field = value.coerceAtLeast(MIN_EXPIRY_DURATION).coerceAtMost(MAX_EXPIRY_DURATION)
+        }
+
+    var cacheMemoryLimit = MEMORY_LIMIT
+        set(value) {
+            field = value.coerceAtLeast(MIN_MEMORY_LIMIT).coerceAtMost(MAX_MEMORY_LIMIT)
+        }
+
+
     companion object {
         const val DEFAULT_TRACKER_URL = "https://d.btttag.com/analytics.rcv"
         const val DEFAULT_ERROR_REPORTING_URL = "https://d.btttag.com/err.rcv"
         const val DEFAULT_NETWORK_CAPTURE_URL = "https://d.btttag.com/wcdv02.rcv"
+
+        private const val MB = 1024 * 1024L
+        private const val HOUR = 60 * 60 * 1000L
+        private const val MIN_MEMORY_LIMIT = 10 * MB
+        private const val MAX_MEMORY_LIMIT = 300 * MB
+        private const val MEMORY_LIMIT = 30 * MB
+        private val MIN_EXPIRY_DURATION = 24 * HOUR
+        private val EXPIRATION_IN_MILLIS = 48 * HOUR
+        private val MAX_EXPIRY_DURATION = 240 * HOUR
     }
 }

@@ -9,7 +9,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
 import com.bluetriangle.analytics.Timer
 import com.bluetriangle.analytics.Tracker.Companion.instance
-import com.bluetriangle.analytics.okhttp.BlueTriangleOkHttpInterceptor
+import com.bluetriangle.analytics.okhttp.bttTrack
 import com.bluetriangle.android.demo.DemoApplication.Companion.checkLaunchTest
 import com.bluetriangle.android.demo.R
 import com.bluetriangle.android.demo.databinding.ActivityTestListBinding
@@ -46,7 +46,7 @@ class KotlinTestListActivity : AppCompatActivity() {
 
         okHttpClient =
             OkHttpClient.Builder()
-                .addInterceptor(BlueTriangleOkHttpInterceptor(instance!!.configuration))
+                .bttTrack()
                 .build()
     }
 

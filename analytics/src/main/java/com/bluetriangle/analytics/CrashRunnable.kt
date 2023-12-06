@@ -2,6 +2,7 @@ package com.bluetriangle.analytics
 
 import android.net.Uri
 import com.bluetriangle.analytics.Constants.TIMER_MIN_PGTM
+import com.bluetriangle.analytics.caching.classifier.CacheType
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.BufferedReader
@@ -52,7 +53,7 @@ internal class CrashRunnable(
         }
         crashHitsTimer.end()
         crashHitsTimer.setField(Timer.FIELD_EXCLUDED, "20")
-        if(errorType == Tracker.BTErrorType.NativeAppCrash) {
+        if (errorType == Tracker.BTErrorType.NativeAppCrash) {
             crashHitsTimer.setPageName(
                 mostRecentTimer?.getField(Timer.FIELD_PAGE_NAME) ?: Constants.CRASH_PAGE_NAME
             )
@@ -167,7 +168,14 @@ internal class CrashRunnable(
     private fun cachePayload(url: String, payloadData: String) {
         if (errorType == Tracker.BTErrorType.ANRWarning) return
         configuration.logger?.info("Caching crash report")
-        configuration.payloadCache?.cachePayload(Payload(url = url, data = payloadData))
+        configuration.payloadCache?.save(
+            Payload(
+                url = url,
+                data = payloadData,
+                type = CacheType.Error,
+                createdAt = System.currentTimeMillis()
+            )
+        )
     }
 
     /**
