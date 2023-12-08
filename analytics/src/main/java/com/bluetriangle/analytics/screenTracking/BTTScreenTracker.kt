@@ -8,8 +8,13 @@ class BTTScreenTracker(private val pageName: String) {
 
     private val id = "${pageName}#${System.currentTimeMillis()}"
     var screenType: String = ""
+    private var isConsumed = false
 
     fun onLoadStarted() {
+        if(isConsumed) {
+            logConsumedError()
+            return
+        }
         Tracker.instance?.screenTrackMonitor?.onLoadStarted(Screen(
             id,
             pageName,
@@ -18,6 +23,10 @@ class BTTScreenTracker(private val pageName: String) {
     }
 
     fun onLoadEnded() {
+        if(isConsumed) {
+            logConsumedError()
+            return
+        }
         Tracker.instance?.screenTrackMonitor?.onLoadEnded(Screen(
             id,
             pageName,
@@ -26,6 +35,10 @@ class BTTScreenTracker(private val pageName: String) {
     }
 
     fun onViewStarted() {
+        if(isConsumed) {
+            logConsumedError()
+            return
+        }
         Tracker.instance?.screenTrackMonitor?.onViewStarted(Screen(
             id,
             pageName,
@@ -34,10 +47,20 @@ class BTTScreenTracker(private val pageName: String) {
     }
 
     fun onViewEnded() {
+        if(isConsumed) {
+            logConsumedError()
+            return
+        }
+        isConsumed = true
         Tracker.instance?.screenTrackMonitor?.onViewEnded(Screen(
             id,
             pageName,
             ScreenType.Custom(screenType)
         ))
     }
+
+    private fun logConsumedError() {
+        Tracker.instance?.configuration?.logger?.error("This object is supposed to be used only once for the lifecycle of a view")
+    }
+
 }
