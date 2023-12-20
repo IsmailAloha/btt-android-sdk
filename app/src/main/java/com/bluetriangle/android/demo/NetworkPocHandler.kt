@@ -2,6 +2,9 @@ package com.bluetriangle.android.demo
 
 import android.view.View
 import com.bluetriangle.analytics.Tracker
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.MediaType.Companion.toMediaType
@@ -11,13 +14,13 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import java.io.IOException
 
-class NetworkPocHandler(private val okHttpClient: OkHttpClient) : Callback {
+class NetworkPocHandler(private val scope: CoroutineScope, private val okHttpClient: OkHttpClient) : Callback {
 
     private val logger = Tracker.instance?.configuration?.logger
 
     fun failingAtDns(view: View) {
         val dnsFailRequest = Request.Builder()
-            .url("https://dnsrequestwouldfailhere.com")
+            .url("https://dnsrequestwouldfailhere.com/myfile")
             .build()
         makeRequest(dnsFailRequest)
     }
@@ -27,6 +30,16 @@ class NetworkPocHandler(private val okHttpClient: OkHttpClient) : Callback {
             .url("https://192.169.2.111/hostnotfound")
             .build()
         makeRequest(connectionFailRequest)
+    }
+
+    fun connectionTimeout(view: View) {
+        scope.launch(Dispatchers.IO) {
+            DelayResponseHttpServer(4000).start()
+        }
+        val connectionTimeout = Request.Builder()
+            .url("http://localhost:4000?seconds=15")
+            .build()
+        makeRequest(connectionTimeout)
     }
 
     fun failingAtRequest(view: View) {

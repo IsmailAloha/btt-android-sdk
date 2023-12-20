@@ -47,12 +47,17 @@
             android:text="Failing at connection" />
 
         <Button
+            android:id="@+id/connectionTimeout"
+            android:onClick="@{pocHandler::connectionTimeout}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Connection Timeout" />
+        <Button
             android:id="@+id/failingAtRequest"
             android:onClick="@{pocHandler::failingAtRequest}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Failing at Request" />
-
         <Button
             android:id="@+id/failingAtResponse"
             android:onClick="@{pocHandler::failingAtResponse}"

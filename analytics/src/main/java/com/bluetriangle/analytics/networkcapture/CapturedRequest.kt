@@ -1,9 +1,13 @@
 package com.bluetriangle.analytics.networkcapture
 
+import com.bluetriangle.analytics.Timer.Companion.FIELD_NATIVE_APP
 import com.bluetriangle.analytics.Tracker
+import org.json.JSONObject
 import java.net.URI
 
 class CapturedRequest {
+    var nativeAppProperties: NetworkNativeAppProperties? = null
+
     /**
      * entry type. Fixed value of "resource".
      */
@@ -32,7 +36,7 @@ class CapturedRequest {
             value?.let {
                 val parsedUri = URI(it)
                 host = parsedUri.host
-                file = parsedUri.path.split("/").filter { segment -> segment.isNotEmpty() }.last()
+                file = parsedUri.path.split("/").lastOrNull { segment -> segment.isNotEmpty() }
             }
         }
 
@@ -76,27 +80,33 @@ class CapturedRequest {
      */
     var responseStatusCode: Int? = null
 
-    val payload: Map<String, String?>
+    val payload: JSONObject
         get() {
-            val payload = mutableMapOf(
-                FIELD_ENTRY_TYPE to entryType,
-                FIELD_DOMAIN to domain,
-                FIELD_HOST to host,
-                FIELD_URL to url,
-                FIELD_FILE to file,
-                FIELD_START_TIME to startTime.toString(),
-                FIELD_END_TIME to endTime.toString(),
-                FIELD_DURATION to duration.toString(),
-                FIELD_REQUEST_TYPE to requestType?.name,
-                FIELD_DECODED_BODY_SIZE to decodedBodySize.toString(),
-                FIELD_ENCODED_BODY_SIZE to encodedBodySize.toString(),
+            val payload = JSONObject(
+                mapOf(
+                    FIELD_ENTRY_TYPE to entryType,
+                    FIELD_DOMAIN to domain,
+                    FIELD_HOST to host,
+                    FIELD_URL to url,
+                    FIELD_FILE to file,
+                    FIELD_START_TIME to startTime.toString(),
+                    FIELD_END_TIME to endTime.toString(),
+                    FIELD_DURATION to duration.toString(),
+                    FIELD_REQUEST_TYPE to requestType?.name,
+                    FIELD_DECODED_BODY_SIZE to decodedBodySize.toString(),
+                    FIELD_ENCODED_BODY_SIZE to encodedBodySize.toString()
+                )
             )
 
             responseStatusCode?.let { code ->
-                payload[FIELD_RESPONSE_CODE] = code.toString()
+                payload.put(FIELD_RESPONSE_CODE, code.toString())
             }
 
-            return payload.toMap()
+            nativeAppProperties?.let {
+                payload.put(FIELD_NATIVE_APP, it.toJSONObject())
+            }
+
+            return payload
         }
 
     /**

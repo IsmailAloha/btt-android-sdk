@@ -3,6 +3,7 @@ package com.bluetriangle.android.demo
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.bluetriangle.analytics.okhttp.bttTrack
 import com.bluetriangle.android.demo.databinding.ActivityNetworkPocBinding
 import okhttp3.Call
@@ -13,6 +14,8 @@ import okhttp3.Request
 import okhttp3.RequestBody
 import okhttp3.Response
 import java.io.IOException
+import java.time.Duration
+import java.util.concurrent.TimeUnit
 
 class NetworkPocActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,8 +24,9 @@ class NetworkPocActivity : AppCompatActivity() {
         setContentView(binding.root)
         val okHttpClient = OkHttpClient.Builder()
             .bttTrack()
+            .callTimeout(10, TimeUnit.SECONDS)
             .build()
-        binding.pocHandler = NetworkPocHandler(okHttpClient)
+        binding.pocHandler = NetworkPocHandler(lifecycleScope, okHttpClient)
 
         binding.postAPI.setOnClickListener {
             val body: RequestBody = FormBody.Builder().add("test", "value").build()
@@ -33,7 +37,7 @@ class NetworkPocActivity : AppCompatActivity() {
         }
         binding.api404.setOnClickListener {
             val failureRequest = Request.Builder()
-                .url("https://192.168.11.222/wrongapi")
+                .url("https://httpbin.org/invalidendpoint")
                 .build()
             okHttpClient.makeRequest(failureRequest)
         }

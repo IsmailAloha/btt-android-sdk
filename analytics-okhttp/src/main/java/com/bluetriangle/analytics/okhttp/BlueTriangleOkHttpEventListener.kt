@@ -2,6 +2,7 @@ package com.bluetriangle.analytics.okhttp
 
 import com.bluetriangle.analytics.BlueTriangleConfiguration
 import com.bluetriangle.analytics.networkcapture.CapturedRequest
+import com.bluetriangle.analytics.networkcapture.NetworkNativeAppProperties
 import okhttp3.Call
 import okhttp3.Connection
 import okhttp3.EventListener
@@ -42,6 +43,7 @@ class BlueTriangleOkHttpEventListener(private val configuration: BlueTriangleCon
         capturedRequest.requestType = requestTypeFromMediaType(capturedRequest.file, mediaType)
         capturedRequest.encodedBodySize = call.request().body?.contentLength()?:0
         capturedRequest.responseStatusCode = 600
+        capturedRequest.nativeAppProperties = NetworkNativeAppProperties("${ioe::class.java.simpleName} : ${ioe.message}")
         capturedRequest.stop()
         capturedRequest.submit()
         configuration.logger?.debug("Submitted request: ${capturedRequest.url}, ${capturedRequest.duration}")
