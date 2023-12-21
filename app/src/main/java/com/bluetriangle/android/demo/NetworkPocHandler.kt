@@ -65,6 +65,13 @@ class NetworkPocHandler(private val scope: CoroutineScope, private val okHttpCli
         makeRequest(tlsFailRequest)
     }
 
+    fun redirectRequest(view: View) {
+        val redirectRequest = Request.Builder()
+            .url("http://publicobject.com/helloworld.txt")
+            .build()
+        makeRequest(redirectRequest)
+    }
+
     private fun makeRequest(request: Request) {
         okHttpClient.newCall(request)
             .enqueue(this)

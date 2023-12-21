@@ -10,7 +10,7 @@ fun OkHttpClient.Builder.bttTrack():OkHttpClient.Builder {
     val configuration = Tracker.instance?.configuration
     if(configuration != null) {
         addInterceptor(BlueTriangleOkHttpInterceptor(configuration))
-        eventListener(BlueTriangleOkHttpEventListener(configuration))
+        eventListenerFactory(BlueTriangleOkHttpEventListenerFactory(configuration))
     }
     return this
 }

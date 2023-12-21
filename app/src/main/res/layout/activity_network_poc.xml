@@ -71,6 +71,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Failing at TLS" />
+        <Button
+            android:id="@+id/redirectRequest"
+            android:onClick="@{pocHandler::redirectRequest}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Redirect Request" />
 
 
     </LinearLayout>

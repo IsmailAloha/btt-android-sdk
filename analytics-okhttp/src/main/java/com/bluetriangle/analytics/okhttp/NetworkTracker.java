@@ -10,7 +10,7 @@ public class NetworkTracker {
         Tracker tracker = Tracker.getInstance();
         if(tracker != null) {
             builder.addInterceptor(new BlueTriangleOkHttpInterceptor(tracker.getConfiguration()));
-            builder.eventListener(new BlueTriangleOkHttpEventListener(tracker.getConfiguration()));
+            builder.eventListenerFactory(new BlueTriangleOkHttpEventListenerFactory(tracker.getConfiguration()));
         }
         return builder;
     }
