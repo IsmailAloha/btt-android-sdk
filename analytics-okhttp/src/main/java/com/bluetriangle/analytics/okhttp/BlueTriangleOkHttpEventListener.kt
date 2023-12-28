@@ -22,6 +22,7 @@ internal class BlueTriangleOkHttpEventListener(
     private val eventListener: EventListener? = null
 ) : EventListener() {
 
+    private var capturedRequest: CapturedRequest? = null
     private val logger = configuration.logger
 
     companion object {
@@ -78,6 +79,16 @@ internal class BlueTriangleOkHttpEventListener(
         super.callStart(call)
         eventListener?.callStart(call)
         printEvent("1.1. callStart(${call.request().url})")
+        if (!configuration.shouldSampleNetwork) {
+            configuration.logger?.error("Not sampling network")
+            return
+        }
+        capturedRequest = CapturedRequest().apply {
+            start()
+            url = call.request().url.toString()
+            val mediaType = call.request().headers["Content-Type"]?.toMediaType()
+            requestType = requestTypeFromMediaType(file, mediaType)
+        }
     }
 
     override fun callFailed(call: Call, ioe: IOException) {
@@ -88,18 +99,16 @@ internal class BlueTriangleOkHttpEventListener(
             configuration.logger?.error("Not sampling network")
             return
         }
-        val capturedRequest = CapturedRequest()
-        capturedRequest.start()
-        capturedRequest.url = call.request().url.toString()
-        val mediaType = call.request().headers["Content-Type"]?.toMediaType()
-        capturedRequest.requestType = requestTypeFromMediaType(capturedRequest.file, mediaType)
-        capturedRequest.encodedBodySize = call.request().body?.contentLength() ?: 0
-        capturedRequest.responseStatusCode = 600
-        capturedRequest.nativeAppProperties =
-            NetworkNativeAppProperties("${ioe::class.java.simpleName} : ${ioe.message}")
-        capturedRequest.stop()
-        capturedRequest.submit()
-        configuration.logger?.debug("Submitted request: ${capturedRequest.url}, ${capturedRequest.duration}")
+
+        capturedRequest?.apply {
+            encodedBodySize = call.request().body?.contentLength() ?: 0
+            responseStatusCode = 600
+            nativeAppProperties = NetworkNativeAppProperties("${ioe::class.java.simpleName} : ${ioe.message}")
+            stop()
+            submit()
+        }
+
+        configuration.logger?.debug("Submitted request: ${capturedRequest?.url}, ${capturedRequest?.duration}")
     }
 
     override fun callEnd(call: Call) {
