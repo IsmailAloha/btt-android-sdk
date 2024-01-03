@@ -25,8 +25,9 @@ class CapturedRequestRunnable(
         var connection: HttpsURLConnection? = null
         val payloadData =
             capturedRequestCollection.buildCapturedRequestData(if (configuration.isDebug) 2 else 0)
+        var url = configuration.networkCaptureUrl
         try {
-            val url = capturedRequestCollection.buildUrl(configuration.networkCaptureUrl)
+            url = capturedRequestCollection.buildUrl(configuration.networkCaptureUrl)
             configuration.logger?.debug("Submitting $capturedRequestCollection to $url")
             configuration.logger?.debug("$capturedRequestCollection payload: $payloadData")
             val requestUrl = URL(url)
@@ -58,7 +59,7 @@ class CapturedRequestRunnable(
                 e,
                 "Android Error submitting $capturedRequestCollection: ${e.message}"
             )
-            cachePayload(configuration.trackerUrl, payloadData)
+            cachePayload(url, payloadData)
         } finally {
             connection?.disconnect()
         }
