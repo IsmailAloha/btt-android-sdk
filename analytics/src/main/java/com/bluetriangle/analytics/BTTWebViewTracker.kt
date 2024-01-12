@@ -6,7 +6,8 @@ import android.webkit.WebView
 object BTTWebViewTracker {
 
     @JvmStatic
-    public fun onLoadResource(view: WebView, url: String) {
+    public fun onLoadResource(view: WebView?, url: String?) {
+        if(view == null || url == null) return
         val fileName = url.split("/").lastOrNull { segment -> segment.isNotEmpty() }
         if(fileName != "btt.js") return
 
