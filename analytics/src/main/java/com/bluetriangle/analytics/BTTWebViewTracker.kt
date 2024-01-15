@@ -16,10 +16,14 @@ object BTTWebViewTracker {
             val sessionID = "{\"value\":\"$it\",\"expires\":\"$expiration\"}"
             val sdkVersion = "{\"value\":\"Android-${BuildConfig.SDK_VERSION}\",\"expires\":\"$expiration\"}"
 
-            view.runJS("window.localStorage.setItem('BTT_X0siD', '$sessionID');")
-            view.runJS("window.localStorage.setItem('BTT_SDK_VER', '$sdkVersion');")
+            view.setLocalStorage("BTT_X0siD", sessionID)
+            view.setLocalStorage("BTT_SDK_VER", sdkVersion)
             Tracker.instance?.configuration?.logger?.info("Injected session ID and SDK version in WebView: BTT_X0siD: $sessionID, BTT_SDK_VER: $sdkVersion")
         }
+    }
+
+    private fun WebView.setLocalStorage(key:String, value:String) {
+        runJS("window.localStorage.setItem('$key', '$value');")
     }
 
     private fun WebView.runJS(js: String) {
