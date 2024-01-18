@@ -36,7 +36,7 @@ class CapturedRequest {
             value?.let {
                 val parsedUri = URI(it)
                 host = parsedUri.host
-                file = parsedUri.path.split("/").filter { segment -> segment.isNotEmpty() }.last()
+                file = parsedUri.path.split("/").lastOrNull { segment -> segment.isNotEmpty() }
             }
         }
 
