@@ -17,7 +17,7 @@ internal data class NativeAppProperties(
         obj.put("loadTime", loadTime)
         obj.put("fullTime", fullTime)
         obj.put("maxMainThreadUsage", maxMainThreadUsage)
-        obj.put("screenType", screenType?.name)
+        obj.put("screenType", screenType?.value)
         return obj
     }
 }

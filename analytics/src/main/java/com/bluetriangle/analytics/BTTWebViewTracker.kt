@@ -14,7 +14,7 @@ object BTTWebViewTracker {
         Tracker.instance?.configuration?.sessionId?.let {
             val expiration = (System.currentTimeMillis() + 1800000).toString()
             val sessionID = "{\"value\":\"$it\",\"expires\":\"$expiration\"}"
-            val sdkVersion = "{\"value\":\"Android-${BuildConfig.SDK_VERSION}\",\"expires\":\"$expiration\"}"
+            val sdkVersion = "Android-${BuildConfig.SDK_VERSION}"
 
             view.setLocalStorage("BTT_X0siD", sessionID)
             view.setLocalStorage("BTT_SDK_VER", sdkVersion)
