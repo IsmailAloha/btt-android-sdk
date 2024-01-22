@@ -4,6 +4,8 @@ import android.os.Build
 import com.bluetriangle.analytics.Timer
 import com.bluetriangle.analytics.Timer.Companion.FIELD_NATIVE_APP
 import com.bluetriangle.analytics.Tracker
+import com.bluetriangle.analytics.networkstate.BTTNetworkState
+import com.bluetriangle.analytics.utility.value
 import java.net.URI
 import org.json.JSONObject
 
@@ -85,7 +87,7 @@ class CapturedRequest {
     /**
      * The Network State while the network call was happening
      */
-    private var networkState: BTTNetworkState?=null
+    private var networkState: BTTNetworkState? = null
 
     val payload: JSONObject
         get() {
@@ -105,10 +107,10 @@ class CapturedRequest {
                 )
             )
 
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                payload.put(FIELD_NATIVE_APP, JSONObject(mapOf(
-                    FIELD_NETWORK_STATE to networkState?.value.toString()
-                )))
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                payload.put(
+                    FIELD_NATIVE_APP, JSONObject(mapOf(FIELD_NETWORK_STATE to networkState?.value.toString()))
+                )
             }
 
             responseStatusCode?.let { code ->
@@ -128,7 +130,7 @@ class CapturedRequest {
     fun start() {
         if (startTime == 0L) {
             startTime = System.currentTimeMillis()
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 networkState = Tracker.instance?.networkStateMonitor?.state?.value
             }
         }
