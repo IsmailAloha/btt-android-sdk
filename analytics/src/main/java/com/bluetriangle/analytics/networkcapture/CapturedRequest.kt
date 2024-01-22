@@ -1,9 +1,11 @@
 package com.bluetriangle.analytics.networkcapture
 
+import android.os.Build
+import com.bluetriangle.analytics.Timer
 import com.bluetriangle.analytics.Timer.Companion.FIELD_NATIVE_APP
 import com.bluetriangle.analytics.Tracker
-import org.json.JSONObject
 import java.net.URI
+import org.json.JSONObject
 
 class CapturedRequest {
     var nativeAppProperties: NetworkNativeAppProperties? = null
@@ -80,6 +82,11 @@ class CapturedRequest {
      */
     var responseStatusCode: Int? = null
 
+    /**
+     * The Network State while the network call was happening
+     */
+    private var networkState: BTTNetworkState?=null
+
     val payload: JSONObject
         get() {
             val payload = JSONObject(
@@ -98,6 +105,12 @@ class CapturedRequest {
                 )
             )
 
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                payload.put(FIELD_NATIVE_APP, JSONObject(mapOf(
+                    FIELD_NETWORK_STATE to networkState?.value.toString()
+                )))
+            }
+
             responseStatusCode?.let { code ->
                 payload.put(FIELD_RESPONSE_CODE, code.toString())
             }
@@ -115,6 +128,9 @@ class CapturedRequest {
     fun start() {
         if (startTime == 0L) {
             startTime = System.currentTimeMillis()
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                networkState = Tracker.instance?.networkStateMonitor?.state?.value
+            }
         }
     }
 
@@ -162,5 +178,6 @@ class CapturedRequest {
         const val FIELD_DECODED_BODY_SIZE = "dz"
         const val FIELD_ENCODED_BODY_SIZE = "ez"
         const val FIELD_RESPONSE_CODE = "rCd"
+        const val FIELD_NETWORK_STATE = "netState"
     }
 }

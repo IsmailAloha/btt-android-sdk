@@ -31,6 +31,7 @@ internal class TimerRunnable(
         val payloadData = buildTimerData()
         var capturedRequestCollections =
             Tracker.instance?.getCapturedRequestCollectionsForTimer(timer)
+        timer.onSubmit()
         try {
             val url = URL(configuration.trackerUrl)
             connection = url.openConnection() as HttpsURLConnection
