@@ -11,13 +11,17 @@ object BTTWebViewTracker {
         val fileName = url.split("/").lastOrNull { segment -> segment.isNotEmpty() }
         if (fileName != "btt.js") return
 
-        Tracker.instance?.configuration?.sessionId?.let {
+        Tracker.instance?.configuration?.let {
             val expiration = (System.currentTimeMillis() + 1800000).toString()
-            val sessionID = "{\"value\":\"$it\",\"expires\":\"$expiration\"}"
+            val sessionID = "{\"value\":\"${it.sessionId}\",\"expires\":\"$expiration\"}"
+
+            val wcdOn = if(it.shouldSampleNetwork) "on" else "off"
+            val wcdCollect = "{\"value\":\"$wcdOn\",\"expires\":\"$expiration\"}"
             val sdkVersion = "Android-${BuildConfig.SDK_VERSION}"
 
             view.setLocalStorage("BTT_X0siD", sessionID)
             view.setLocalStorage("BTT_SDK_VER", sdkVersion)
+            view.setLocalStorage("BTT_WCD_Collect", wcdCollect)
             Tracker.instance?.configuration?.logger?.info("Injected session ID and SDK version in WebView: BTT_X0siD: $sessionID, BTT_SDK_VER: $sdkVersion")
         }
     }
