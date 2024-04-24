@@ -279,17 +279,27 @@ The recommended setting is 1.0 to capture all network requests.
 
 ### OkHttp Support
 
-OkHttp support is provided out of the box with the SDK. Just add the `BlueTriangleOkHttpInterceptor` interceptor to
+OkHttp support is provided out of the box with the SDK. Just add the `BlueTriangleOkHttpInterceptor` interceptor and `BlueTriangleOkHttpEventListener` event listener to
 your `OkHttpClient` as follows:
 
 ```kotlin
 val okHttpClient = OkHttpClient.Builder()
     .addInterceptor(BlueTriangleOkHttpInterceptor(Tracker.instance!!.configuration))
+    .eventListener(BlueTriangleOkHttpEventListener(Tracker.instance!!.configuration))
     .build()
 ```
 
 The `BlueTriangleOkHttpInterceptor` will automatically handle capturing network requests and
-submitting them to the tracker.
+submitting them to the tracker and `BlueTriangleOkHttpEventListener` will automatically track all network errors and submit them.
+
+If you already have an EventListener attached to the OkHttpClient. You can just pass that EventListener in the constructor of `BlueTriangleOkHttpEventListener` as follows:
+
+```kotlin
+val okHttpClient = OkHttpClient.Builder()
+    .addInterceptor(BlueTriangleOkHttpInterceptor(Tracker.instance!!.configuration))
+    .eventListener(BlueTriangleOkHttpEventListener(Tracker.instance!!.configuration, <your event listener object>))
+    .build()
+```
 
 ### Manual Network Capture
 
