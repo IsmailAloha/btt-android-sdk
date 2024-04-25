@@ -111,7 +111,7 @@ To find site ID,
 
 <img src="settings_modal.png" alt="Settings Modal" width="840"/>
 
-6. Get the value in the "Tag Prefix" column for the desired "Site Name".
+5. Get the value in the "Tag Prefix" column for the desired "Site Name".
 
 
 <img src="sites_table.png" alt="Sites Table" width="700"/>
