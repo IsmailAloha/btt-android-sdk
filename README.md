@@ -103,15 +103,14 @@ Before any timers can be tracked, the `Tracker` needs to be initialized. The rec
 ### How to find your site ID
 
 To find site ID,
-1. Go to https://portal.bluetriangletech.com
-2. Login to portal
-3. Click on "Settings" icon
-4. Open the **Sites** page under the **Settings** Modal. (Logged in user needs to have access to Sites page)
+1. Login to https://portal.bluetriangletech.com
+2. Click on "Settings" icon
+3. Open the **Sites** page under the **Settings** Modal. (Logged in user needs to have access to Sites page)
 
 
 <img src="settings_modal.png" alt="Settings Modal" width="840"/>
 
-5. Get the value in the "Tag Prefix" column for the desired "Site Name".
+4. Get the value for site ID from the "Tag Prefix" column for the desired "Site Name".
 
 
 <img src="sites_table.png" alt="Sites Table" width="700"/>
