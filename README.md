@@ -49,71 +49,68 @@ implementation("com.github.blue-triangle-tech:btt-android-sdk:2.9.0") {
 
 ## Using the Analytics library
 
-### Initializing the Tracker
+### Configuration
 
-The `Tracker` is a singleton instance that is responsible for sending timers to Blue Triangle.
-Before any timers can be tracked, the `Tracker` needs to be initialized.
+In order to start using the SDK, you need to first configure the SDK. To do that, do the following steps:
 
-The best place to do this in the Android `Application`. In the `Application`, the tracker can be
-initialized via the `init` static methods.
-
-If a site ID is not set during the initialization, it will attempt to look up the site ID via the
-application's meta-data (as well as fallback to the deprecated String resource lookup). If a tracker
-URL is not provided, the default tracker URL will be used.
+1. Add your site ID in the manifest as follows
 
 ```xml
-
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application>
-        <meta-data android:name="com.blue-triangle.site-id" android:value="SITE_ID_HERE"/>
+        <meta-data android:name="com.blue-triangle.site-id" android:value="<BTT_SITE_ID>"/>
     </application>
 </manifest>
 ```
 
-```java
-// init with all defaults, use site ID from meta data
-Tracker.init(getApplicationContext());
-// init with given site ID
-        Tracker.init(getApplicationContext(),"BTT_SITE_ID");
-// init with given site ID and tracker URL
-        Tracker.init(getApplicationContext(),"BTT_SITE_ID","https://webhook.site/5afd62e7-acde-4cf3-825c-c40c491b0714");
+2. Initialize the Tracker object as follows
+
+```kotlin
+import android.app.Application
+import com.bluetriangle.analytics.Tracker
+
+class YourApplication:Application() {
+
+    override fun onCreate() {
+        super.onCreate()
+        Tracker.init(this)
+    }
+    
+}
 ```
 
-### Configuration
+Alternatively, if you don't want to add meta-data in your Manifest file, you can provide the site ID programmatically as follows
 
-Blue Triangle SDK allows you to enable/disable or configure to certain features through the
-use of configurations. Each feature mentioned in this document provides ways to customize it through available
-configurations.
-There are two possible ways to use any configuration:
+```kotlin
+import android.app.Application
+import com.bluetriangle.analytics.Tracker
 
-1. **Programmatically**<br/>
-   For each configuration, there is a property in the `BlueTriangleConfiguration`. To apply configuration
-   programmatically, set the corresponding property while initializing the
-   SDK. [See Initialization](#initializing-the-tracker).
+class YourApplication:Application() {
 
-   For instance, to enable logging programmatically, the initialization code will look like below:
+    override fun onCreate() {
+        super.onCreate()
+        Tracker.init(this, <BTT_SITE_ID>)
+    }
+    
+}
+```
 
-   ```kotlin
-   val config = BlueTriangleConfiguration()
-   config.isDebug = true
-   Tracker.init(application, config)
-   ```
+Replace <BTT_SITE_ID> with your site ID.
 
-2. **Manifest Meta-data**<br/>
-   To provide the configuration in AndroidManifest.xml, add `<meta-data>` tags inside the `<application>` tag as
-   follows:
+The `Tracker` is a singleton instance that is responsible for sending timers to Blue Triangle.
+Before any timers can be tracked, the `Tracker` needs to be initialized. The recommended place to do this in the Android `Application`.
 
-   ```xml
-   <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-       <application>
-           <meta-data android:name="<configuration-name>" android:value="<configuration-value>"/>
-       </application>
-   </manifest>
-   ```
+### How to find your site ID
 
-> **Note:** <br/>
-> If you provide configuration both in AndroidManifest.xml and through BlueTriangleConfiguration object, then
-> the value from the AndroidManifest.xml meta-data will be given precedence.
+To find site ID,
+1. Go to https://portal.bluetriangletech.com
+2. Login to portal
+3. Click on "Settings" icon
+4. Open the **Sites** page under the **Settings** Modal. (Logged in user needs to have access to Sites page)
+   ![Settings Modal](settings_modal.png)
+5. Get the value in the "Tag Prefix" column for the desired "Site Name".
+   ![Sites Table](sites_table.png)
+
 
 ### Using Timers
 
