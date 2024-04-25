@@ -107,9 +107,14 @@ To find site ID,
 2. Login to portal
 3. Click on "Settings" icon
 4. Open the **Sites** page under the **Settings** Modal. (Logged in user needs to have access to Sites page)
-   ![Settings Modal](settings_modal.png)
-5. Get the value in the "Tag Prefix" column for the desired "Site Name".
-   ![Sites Table](sites_table.png)
+
+
+<img src="settings_modal.png" alt="Settings Modal" width="840"/>
+
+6. Get the value in the "Tag Prefix" column for the desired "Site Name".
+
+
+<img src="sites_table.png" alt="Sites Table" width="700"/>
 
 
 ### Using Timers
