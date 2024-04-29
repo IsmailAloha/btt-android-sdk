@@ -95,26 +95,7 @@ class YourApplication:Application() {
 }
 ```
 
-Replace <BTT_SITE_ID> with your site ID.
-
-The `Tracker` is a singleton instance that is responsible for sending timers to Blue Triangle.
-Before any timers can be tracked, the `Tracker` needs to be initialized. The recommended place to do this in the Android `Application`.
-
-### How to find your site ID
-
-To find site ID,
-1. Login to https://portal.bluetriangletech.com
-2. Click on "Settings" icon
-3. Open the **Sites** page under the **Settings** Modal. (Logged in user needs to have access to Sites page)
-
-
-<img src="settings_modal.png" alt="Settings Modal" width="840"/>
-
-4. Get the value for site ID from the "Tag Prefix" column for the desired "Site Name".
-
-
-<img src="sites_table.png" alt="Sites Table" width="700"/>
-
+Replace `<BTT_SITE_ID>` with your **site ID**. You can find instructions on how to find your **site ID** [**here**](https://help.bluetriangle.com/hc/en-us/articles/28809592302483-How-to-find-your-Site-ID-for-the-BTT-SDK).
 
 ### Using Timers
 
