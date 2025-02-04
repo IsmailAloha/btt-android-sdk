@@ -15,6 +15,8 @@ import androidx.core.content.ContextCompat
 import com.bluetriangle.analytics.Timer.Companion.FIELD_SESSION_ID
 import com.bluetriangle.analytics.anrwatchdog.AnrManager
 import com.bluetriangle.analytics.appeventhub.AppEventHub
+import com.bluetriangle.analytics.common.SDKConfiguration
+import com.bluetriangle.analytics.common.SDKEventsManager
 import com.bluetriangle.analytics.deviceinfo.DeviceInfoProvider
 import com.bluetriangle.analytics.deviceinfo.IDeviceInfoProvider
 import com.bluetriangle.analytics.dynamicconfig.fetcher.BTTConfigurationFetcher
@@ -158,6 +160,14 @@ class Tracker private constructor(
 
         initializeNetworkMonitoring()
         configuration.logger?.debug("SDK is enabled")
+        SDKEventsManager.notifyEnabled(
+            SDKConfiguration(
+                configuration.siteId?:"",
+                configuration.sessionId,
+                null,
+                false
+            )
+        )
     }
 
     @Synchronized
@@ -170,6 +180,7 @@ class Tracker private constructor(
         stopTrackCrashes()
         deInitializeNetworkMonitoring()
         configuration.logger?.debug("SDK is disabled.")
+        SDKEventsManager.notifyDisabled()
     }
 
     fun trackCrashes() {
@@ -811,6 +822,13 @@ class Tracker private constructor(
             if (!validateAndInitializeConfiguration(application, configuration)) {
                 return null
             }
+
+            SDKEventsManager.notifyConfigured(application, SDKConfiguration(
+                configuration.siteId?:"",
+                configuration.sessionId,
+                null,
+                false
+            ))
 
             initializeConfigurationUpdater(application, configuration)
 
