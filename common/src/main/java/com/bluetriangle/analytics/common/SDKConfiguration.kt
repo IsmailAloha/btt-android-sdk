@@ -1,6 +1,6 @@
 package com.bluetriangle.analytics.common
 
-class SDKConfiguration(
+data class SDKConfiguration(
     val siteID: String,
     val sessionID: String?,
     val clarityProjectID: String?,

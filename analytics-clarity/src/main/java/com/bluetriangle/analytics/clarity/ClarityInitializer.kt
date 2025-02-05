@@ -13,19 +13,19 @@ object ClarityInitializer:SDKEventsListener {
     }
 
     override fun onConfigured(application: Application, configuration: SDKConfiguration) {
-        Log.d("BlueTriangle", "ClarityInitializer::onEnabled")
+        Log.d("BlueTriangle", "ClarityInitializer::onEnabled::${configuration}")
     }
 
     override fun onEnabled(application: Application, configuration: SDKConfiguration) {
-        Log.d("BlueTriangle", "ClarityInitializer::onEnabled")
+        Log.d("BlueTriangle", "ClarityInitializer::onEnabled::${configuration}")
     }
 
     override fun onDisabled(application: Application, configuration: SDKConfiguration) {
-        Log.d("BlueTriangle", "ClarityInitializer::onDisabled")
+        Log.d("BlueTriangle", "ClarityInitializer::onDisabled::${configuration}")
     }
 
     override fun onSessionChanged(application: Application, configuration: SDKConfiguration) {
-        Log.d("BlueTriangle", "ClarityInitializer::onSessionChanged")
+        Log.d("BlueTriangle", "ClarityInitializer::onSessionChanged::${configuration}")
     }
 
 }
