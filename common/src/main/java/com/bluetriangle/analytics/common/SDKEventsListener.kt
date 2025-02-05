@@ -1,13 +1,15 @@
 package com.bluetriangle.analytics.common
 
+import android.app.Application
+
 interface SDKEventsListener {
 
-    fun onConfigured(configuration: SDKConfiguration)
+    fun onConfigured(application: Application, configuration: SDKConfiguration)
 
-    fun onEnabled(configuration: SDKConfiguration)
+    fun onEnabled(application: Application, configuration: SDKConfiguration)
 
-    fun onDisabled(configuration: SDKConfiguration)
+    fun onDisabled(application: Application, configuration: SDKConfiguration)
 
-    fun onSessionChanged(configuration: SDKConfiguration)
+    fun onSessionChanged(application: Application, configuration: SDKConfiguration)
 
 }

@@ -1,9 +1,10 @@
 package com.bluetriangle.analytics.clarity
 
+import android.app.Application
+import android.util.Log
 import com.bluetriangle.analytics.common.SDKConfiguration
 import com.bluetriangle.analytics.common.SDKEventsListener
 import com.bluetriangle.analytics.common.SDKEventsManager
-import com.microsoft.clarity.Clarity
 
 object ClarityInitializer:SDKEventsListener {
 
@@ -11,22 +12,20 @@ object ClarityInitializer:SDKEventsListener {
         SDKEventsManager.registerConfigurationEventListener(this)
     }
 
-    override fun onConfigured(configuration: SDKConfiguration) {
-        configuration.clarityProjectID?.let {
-
-        }
+    override fun onConfigured(application: Application, configuration: SDKConfiguration) {
+        Log.d("BlueTriangle", "ClarityInitializer::onEnabled")
     }
 
-    override fun onEnabled(configuration: SDKConfiguration) {
-
+    override fun onEnabled(application: Application, configuration: SDKConfiguration) {
+        Log.d("BlueTriangle", "ClarityInitializer::onEnabled")
     }
 
-    override fun onDisabled(configuration: SDKConfiguration) {
-
+    override fun onDisabled(application: Application, configuration: SDKConfiguration) {
+        Log.d("BlueTriangle", "ClarityInitializer::onDisabled")
     }
 
-    override fun onSessionChanged(configuration: SDKConfiguration) {
-
+    override fun onSessionChanged(application: Application, configuration: SDKConfiguration) {
+        Log.d("BlueTriangle", "ClarityInitializer::onSessionChanged")
     }
 
 }

@@ -25,20 +25,26 @@ object SDKEventsManager {
     }
 
     fun notifyEnabled(sdkConfiguration: SDKConfiguration) {
+        val app = this.application?:return
+
         sdkEventsListeners.forEach {
-            it.get()?.onEnabled(sdkConfiguration)
+            it.get()?.onEnabled(app, sdkConfiguration)
         }
     }
 
     fun notifyDisabled(sdkConfiguration: SDKConfiguration) {
+        val app = this.application?:return
+
         sdkEventsListeners.forEach {
-            it.get()?.onDisabled(sdkConfiguration)
+            it.get()?.onDisabled(app, sdkConfiguration)
         }
     }
 
     fun notifySessionChanged(sdkConfiguration: SDKConfiguration) {
+        val app = this.application?:return
+
         sdkEventsListeners.forEach {
-            it.get()?.onSessionChanged(sdkConfiguration)
+            it.get()?.onSessionChanged(app, sdkConfiguration)
         }
     }
 }
