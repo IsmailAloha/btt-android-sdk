@@ -21,3 +21,5 @@
 #-renamesourcefileattribute SourceFile
 
 # Keep only public API of analytics module
+
+-keep class com.bluetriangle.analytics.clarity.ClarityInitializer { *; }
