@@ -21,8 +21,3 @@
 #-renamesourcefileattribute SourceFile
 
 # Keep only public API of analytics module
--keep class com.bluetriangle.analytics.clarity.** { *; }
-
-# Hide common module classes
--dontwarn com.bluetriangle.analytics.common.**
--keep class com.bluetriangle.analytics.common.** { <init>(); }
