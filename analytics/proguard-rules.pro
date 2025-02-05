@@ -19,3 +19,9 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+-keep class com.bluetriangle.analytics.** { *; }
+
+# Hide common module classes
+-dontwarn com.bluetriangle.analytics.common.**
+-keep class com.bluetriangle.analytics.common.** { <init>(); }
