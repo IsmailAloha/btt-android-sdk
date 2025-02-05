@@ -180,7 +180,14 @@ class Tracker private constructor(
         stopTrackCrashes()
         deInitializeNetworkMonitoring()
         configuration.logger?.debug("SDK is disabled.")
-        SDKEventsManager.notifyDisabled()
+        SDKEventsManager.notifyDisabled(
+            SDKConfiguration(
+                configuration.siteId?:"",
+                configuration.sessionId,
+                null,
+                false
+            )
+        )
     }
 
     fun trackCrashes() {
@@ -600,6 +607,14 @@ class Tracker private constructor(
         screenTrackMonitor?.ignoreScreens = sessionData.ignoreScreens
         setSessionId(sessionData.sessionId)
         BTTWebViewTracker.updateSession(sessionData.sessionId)
+        SDKEventsManager.notifySessionChanged(
+            SDKConfiguration(
+                configuration.siteId?:"",
+                configuration.sessionId,
+                null,
+                false
+            )
+        )
     }
 
     /**
