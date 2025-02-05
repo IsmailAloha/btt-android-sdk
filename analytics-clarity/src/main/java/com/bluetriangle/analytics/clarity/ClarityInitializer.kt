@@ -2,11 +2,11 @@ package com.bluetriangle.analytics.clarity
 
 import android.app.Application
 import android.util.Log
-import com.bluetriangle.analytics.common.SDKConfiguration
-import com.bluetriangle.analytics.common.SDKEventsListener
-import com.bluetriangle.analytics.common.SDKEventsManager
+import com.bluetriangle.analytics.sdkevents.SDKConfiguration
+import com.bluetriangle.analytics.sdkevents.SDKEventsListener
+import com.bluetriangle.analytics.sdkevents.SDKEventsManager
 
-object ClarityInitializer:SDKEventsListener {
+object ClarityInitializer: SDKEventsListener {
 
     init {
         SDKEventsManager.registerConfigurationEventListener(this)

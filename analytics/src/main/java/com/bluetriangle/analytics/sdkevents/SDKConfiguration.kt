@@ -1,4 +1,4 @@
-package com.bluetriangle.analytics.common
+package com.bluetriangle.analytics.sdkevents
 
 data class SDKConfiguration(
     val siteID: String,

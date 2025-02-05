@@ -15,8 +15,8 @@ import androidx.core.content.ContextCompat
 import com.bluetriangle.analytics.Timer.Companion.FIELD_SESSION_ID
 import com.bluetriangle.analytics.anrwatchdog.AnrManager
 import com.bluetriangle.analytics.appeventhub.AppEventHub
-import com.bluetriangle.analytics.common.SDKConfiguration
-import com.bluetriangle.analytics.common.SDKEventsManager
+import com.bluetriangle.analytics.sdkevents.SDKConfiguration
+import com.bluetriangle.analytics.sdkevents.SDKEventsManager
 import com.bluetriangle.analytics.deviceinfo.DeviceInfoProvider
 import com.bluetriangle.analytics.deviceinfo.IDeviceInfoProvider
 import com.bluetriangle.analytics.dynamicconfig.fetcher.BTTConfigurationFetcher
@@ -843,7 +843,8 @@ class Tracker private constructor(
                 configuration.sessionId,
                 null,
                 false
-            ))
+            )
+            )
 
             initializeConfigurationUpdater(application, configuration)
 

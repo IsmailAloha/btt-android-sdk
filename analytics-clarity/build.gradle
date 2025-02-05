@@ -31,7 +31,6 @@ android {
 }
 
 dependencies {
-    api(project(":common"))
     implementation project(":analytics")
     api "com.microsoft.clarity:clarity:3.1.2"
 }

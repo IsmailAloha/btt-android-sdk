@@ -1,4 +1,4 @@
-package com.bluetriangle.analytics.common
+package com.bluetriangle.analytics.sdkevents
 
 import android.app.Application
 import java.lang.ref.WeakReference
@@ -17,7 +17,7 @@ object SDKEventsManager {
     private var application: Application ?= null
 
     fun notifyConfigured(application: Application, sdkConfiguration: SDKConfiguration) {
-        this.application = application
+        SDKEventsManager.application = application
 
         sdkEventsListeners.forEach {
             it.get()?.onConfigured(application, sdkConfiguration)
@@ -25,7 +25,7 @@ object SDKEventsManager {
     }
 
     fun notifyEnabled(sdkConfiguration: SDKConfiguration) {
-        val app = this.application?:return
+        val app = application ?:return
 
         sdkEventsListeners.forEach {
             it.get()?.onEnabled(app, sdkConfiguration)
@@ -33,7 +33,7 @@ object SDKEventsManager {
     }
 
     fun notifyDisabled(sdkConfiguration: SDKConfiguration) {
-        val app = this.application?:return
+        val app = application ?:return
 
         sdkEventsListeners.forEach {
             it.get()?.onDisabled(app, sdkConfiguration)
@@ -41,7 +41,7 @@ object SDKEventsManager {
     }
 
     fun notifySessionChanged(sdkConfiguration: SDKConfiguration) {
-        val app = this.application?:return
+        val app = application ?:return
 
         sdkEventsListeners.forEach {
             it.get()?.onSessionChanged(app, sdkConfiguration)
