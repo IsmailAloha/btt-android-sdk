@@ -2,6 +2,7 @@ package com.bluetriangle.analytics.thirdpartyintegration
 
 import android.app.Application
 import com.bluetriangle.analytics.Logger
+import com.bluetriangle.analytics.isClassAvailable
 import com.microsoft.clarity.Clarity
 import com.microsoft.clarity.ClarityConfig
 import com.microsoft.clarity.models.LogLevel
@@ -19,8 +20,12 @@ internal class ClarityConnector(val application: Application,
         const val CLARITY_SESSION_URL_CV = "CV0"
     }
 
+    private var isClarityAvailable = isClassAvailable("com.microsoft.clarity.Clarity")
+
     @Synchronized
     override fun start(connectorConfiguration: ConnectorConfiguration) {
+        if(!isClarityAvailable) return
+
         clarityProjectID = connectorConfiguration.clarityProjectID
         clarityEnabled = connectorConfiguration.clarityEnabled
 
@@ -41,6 +46,8 @@ internal class ClarityConnector(val application: Application,
     }
 
     private fun setSessionURLToCustomVariable() {
+        if(!isClarityAvailable) return
+
         val sessionURL = Clarity.getCurrentSessionUrl()
         if(sessionURL != null) {
             customVariablesAdapter.setCustomVariable(CLARITY_SESSION_URL_CV, sessionURL)
@@ -49,13 +56,15 @@ internal class ClarityConnector(val application: Application,
 
     @Synchronized
     override fun stop() {
+        if(!isClarityAvailable) return
+
         Clarity.pause()
         customVariablesAdapter.clearCustomVariable(CLARITY_SESSION_URL_CV)
         logger?.debug("Clarity paused")
     }
 
     @Synchronized
-    override fun nativeAppPayloadFields() = if(clarityProjectID != null && clarityEnabled) {
+    override fun nativeAppPayloadFields() = if(clarityProjectID != null && clarityEnabled && isClarityAvailable) {
         mapOf(
             CLARITY_PROJECT_ID to clarityProjectID
         )

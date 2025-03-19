@@ -204,3 +204,12 @@ fun JSONObject.toMap(): Map<String, Any> {
         }.getOrNull()
     }.filterValues { it != null }.mapValues { it.value as Any }
 }
+
+fun isClassAvailable(className: String): Boolean {
+    try {
+        Class.forName(className)
+        return true
+    } catch (e: ClassNotFoundException) {
+        return false
+    }
+}
