@@ -93,35 +93,6 @@ afterEvaluate {
             }
         }
     }
-
-    tasks.register("checkClarityVersion") {
-        doLast {
-            // Find Clarity dependency in the host app's runtime classpath
-            def clarityDependency = project.configurations
-                    .named("runtimeClasspath")
-                    .get()
-                    .resolvedConfiguration
-                    .resolvedArtifacts
-                    .find { it.name == "clarity" }
-
-            if (clarityDependency != null) {
-                def requiredVersion = "3.0.0"
-                def currentVersion = clarityDependency.moduleVersion.id.version
-
-                if (currentVersion < requiredVersion) {
-                    throw GradleException(
-                            "Clarity version must be at least $requiredVersion, but found $currentVersion. " +
-                                    "Please update the dependency in your app."
-                    )
-                }
-            }
-        }
-    }
-
-    // Ensure the task runs before every build
-    tasks.named("preBuild").configure {
-        dependsOn("checkClarityVersion")
-    }
 }
 
 tasks.withType(Test).configureEach {
