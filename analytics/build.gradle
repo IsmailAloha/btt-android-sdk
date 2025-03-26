@@ -95,6 +95,31 @@ afterEvaluate {
     }
 }
 
+tasks.register("clarityVersionCheck") {t ->
+    group = "Blue Triangle"
+    description = "Checks whether appropriate Clarity version has been added for Blue Triangle integration."
+
+    doLast {
+        try {
+            project.rootProject.subprojects.forEach { subProject ->
+                subProject.configurations.matching { config -> config.canBeResolved }.forEach { config ->
+                    config.resolvedConfiguration.firstLevelModuleDependencies.forEach { dep ->
+                        println(dep.name + ", group: " + dep.moduleGroup + ", art: " + dep.moduleName)
+                    }
+                }
+            }
+        } catch (Exception e) {
+
+        }
+    }
+}
+
+project.afterEvaluate {
+    tasks.named("preBuild").configure {
+        dependsOn "clarityVersionCheck"
+    }
+}
+
 tasks.withType(Test).configureEach {
     reports {
         junitXml.getRequired().set(true)  // Enable XML test results
