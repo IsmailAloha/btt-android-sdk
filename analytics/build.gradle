@@ -3,17 +3,18 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'maven-publish'
     id 'kotlin-parcelize'
+    id("org.jetbrains.kotlin.plugin.compose") version('2.2.0')
 }
 
 version = "2.18.0-beta-1"
 
 android {
     namespace 'com.bluetriangle.analytics'
-    compileSdk 31
+    compileSdk 35
 
     defaultConfig {
         minSdk 16
-        targetSdk 31
+        targetSdk 35
 
         buildConfigField "String", "SDK_VERSION", "\"$version\""
 
@@ -48,10 +49,11 @@ android {
 
     buildFeatures {
         compose true
+        buildConfig true
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.7"
+        kotlinCompilerExtensionVersion = "1.5.3"
     }
     kotlinOptions {
         jvmTarget = '11'

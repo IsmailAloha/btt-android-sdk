@@ -16,6 +16,12 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".groupingcomposepoc.DemoComposeActivity"
+            android:exported="true"
+            android:label="@string/title_activity_demo_compose"
+            android:theme="@style/AppTheme">
+        </activity>
+        <activity
             android:name=".groupingpoc.DemoMainActivity"
             android:exported="true">
             <intent-filter>
@@ -39,8 +45,7 @@
         <activity
             android:name=".HomeActivity"
             android:exported="true"
-            android:label="@string/app_name">
-        </activity>
+            android:label="@string/app_name"/>
         <activity
             android:name=".java.JavaTestListActivity"
             android:exported="false" />
