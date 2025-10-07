@@ -8,4 +8,6 @@ interface PayloadProvider {
 
     fun getExpired():List<PayloadComponent>
 
+    fun removeById(id: String, type: CacheType)
+
 }

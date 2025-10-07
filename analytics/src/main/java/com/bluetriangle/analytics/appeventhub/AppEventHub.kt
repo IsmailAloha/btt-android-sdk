@@ -81,5 +81,12 @@ internal class AppEventHub private constructor(): AppEventConsumer {
         }
     }
 
+    override fun onAppDestroyed(application: Application) {
+        super.onAppDestroyed(application)
+
+        notifyConsumers {
+            it.onAppDestroyed(application)
+        }
+    }
 
 }

@@ -4,6 +4,7 @@ import android.os.Parcelable
 import com.bluetriangle.analytics.Constants.APP_VERSION
 import com.bluetriangle.analytics.Constants.CONFIDENCE_MSG
 import com.bluetriangle.analytics.Constants.CONFIDENCE_RATE
+import com.bluetriangle.analytics.Constants.CONFIG_KEY
 import com.bluetriangle.analytics.Constants.FULL_TIME
 import com.bluetriangle.analytics.Constants.GROUPED
 import com.bluetriangle.analytics.Constants.GROUPING_CAUSE
@@ -48,7 +49,8 @@ internal data class NativeAppProperties(
     var confidenceRate: Int? = null,
     var confidenceMsg: String? = null,
     var groupingCause: String? = null,
-    var groupingCauseInterval: Long? = null
+    var groupingCauseInterval: Long? = null,
+    var configKey: String? = null
 ) : Parcelable {
 
     internal var loadStartTime: Long = 0
@@ -87,6 +89,7 @@ internal data class NativeAppProperties(
         obj.put(FIELD_DEVICE_MODEL, deviceModel)
         obj.put(CONFIDENCE_RATE, confidenceRate)
         obj.put(CONFIDENCE_MSG, confidenceMsg)
+        obj.put(CONFIG_KEY, configKey)
 
         return obj
     }

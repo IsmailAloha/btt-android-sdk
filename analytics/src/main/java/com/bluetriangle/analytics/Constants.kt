@@ -54,4 +54,6 @@ object Constants {
     internal const val CONFIDENCE_RATE = "confidenceRate"
     internal const val CONFIDENCE_MSG = "confidenceMsg"
 
+    internal const val CONFIG_KEY = "configKey"
+
 }

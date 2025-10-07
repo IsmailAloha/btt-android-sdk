@@ -12,12 +12,13 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.text.TextUtils
 import androidx.core.content.ContextCompat
-import androidx.core.content.edit
 import com.bluetriangle.analytics.Timer.Companion.FIELD_SESSION_ID
 import com.bluetriangle.analytics.anrwatchdog.AnrManager
 import com.bluetriangle.analytics.appeventhub.AppEventHub
 import com.bluetriangle.analytics.breadcrumbs.UserEvent
 import com.bluetriangle.analytics.breadcrumbs.UserEventsCollection
+import com.bluetriangle.analytics.caching.PayloadTypeCache
+import com.bluetriangle.analytics.caching.classifier.CacheType
 import com.bluetriangle.analytics.deviceinfo.DeviceInfoProvider
 import com.bluetriangle.analytics.deviceinfo.IDeviceInfoProvider
 import com.bluetriangle.analytics.dynamicconfig.fetcher.BTTConfigurationFetcher
@@ -42,6 +43,7 @@ import com.bluetriangle.analytics.sessionmanager.ISessionManager
 import com.bluetriangle.analytics.sessionmanager.SessionData
 import com.bluetriangle.analytics.sessionmanager.SessionManager
 import com.bluetriangle.analytics.thirdpartyintegration.ClaritySessionConnector
+import com.bluetriangle.analytics.utility.PrefsDataStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
@@ -172,7 +174,19 @@ class Tracker private constructor(
         }
 
         initializeNetworkMonitoring()
+
+        sendTempPayloads()
         configuration.logger?.debug("SDK is enabled")
+    }
+
+    private fun sendTempPayloads() {
+        val payloadTypeCache = PayloadTypeCache(CacheType.Analytics, configuration)
+
+        while(payloadTypeCache.hasCachedPayloads()) {
+            payloadTypeCache.pickNext()?.let {
+                submitPayload(it)
+            }
+        }
     }
 
     @Synchronized
@@ -330,16 +344,11 @@ class Tracker private constructor(
      */
     private val globalUserId: String
         get() {
-            var globalUserId: String? = null
-            val context = context.get() ?: return Utils.generateRandomId()
-            val sharedPreferences =
-                context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
-            if (sharedPreferences.contains(Timer.FIELD_GLOBAL_USER_ID)) {
-                globalUserId = sharedPreferences.getString(Timer.FIELD_GLOBAL_USER_ID, null)
-            }
+            var globalUserId = PrefsDataStore.getGlobalUserId()
+
             if (globalUserId.isNullOrBlank()) {
                 globalUserId = Utils.generateRandomId()
-                sharedPreferences.edit { putString(Timer.FIELD_GLOBAL_USER_ID, globalUserId) }
+                PrefsDataStore.setGlobalUserId(globalUserId)
             }
             return globalUserId
         }
@@ -853,8 +862,6 @@ class Tracker private constructor(
     }
 
     companion object {
-        private const val SHARED_PREFERENCES_NAME = "BTT_SHARED_PREFERENCES"
-
         /**
          * String resource name for the site ID
          */
@@ -929,6 +936,8 @@ class Tracker private constructor(
                 return instance
             }
 
+            PrefsDataStore.init(application)
+
             if (!validateAndInitializeConfiguration(application, configuration)) {
                 return null
             }
@@ -941,7 +950,8 @@ class Tracker private constructor(
                 enableScreenTracking = configuration.isScreenTrackingEnabled,
                 enableGrouping = configuration.isGroupingEnabled,
                 groupingIdleTime = configuration.groupingIdleTime,
-                groupedViewSampleRate = configuration.groupedViewSampleRate
+                groupedViewSampleRate = configuration.groupedViewSampleRate,
+                configKey = null
             )
 
             initializeConfigurationUpdater(application, configuration, defaultConfig)
@@ -968,6 +978,7 @@ class Tracker private constructor(
             initializeAppName(application, configuration)
             initializeUserAgent(application, configuration)
             initializeCacheDirectory(application, configuration)
+            initializeTempCacheDirectory(application, configuration)
             checkAndInitializeSiteIDFromResources(application, configuration)
 
             // if still no site ID, log error
@@ -1013,6 +1024,20 @@ class Tracker private constructor(
                     }
                 }
                 configuration.cacheDirectory = cacheDir.absolutePath
+            }
+        }
+
+        private fun initializeTempCacheDirectory(
+            application: Application, configuration: BlueTriangleConfiguration
+        ) {
+            if (configuration.tempCacheDirectory.isNullOrBlank()) {
+                val cacheDir = File(application.cacheDir, "temp_bta")
+                if (!cacheDir.exists()) {
+                    if (!cacheDir.mkdir()) {
+                        configuration.logger?.error("Error creating cache directory: ${cacheDir.absolutePath}")
+                    }
+                }
+                configuration.tempCacheDirectory = cacheDir.absolutePath
             }
         }
 

@@ -14,6 +14,7 @@ internal class BTTSavedRemoteConfiguration(
     enableGrouping: Boolean,
     groupingIdleTime: Int,
     groupedViewSampleRate: Double?,
+    configKey: String?,
     val savedDate: Long
 ) : BTTRemoteConfiguration(
     networkSampleRate,
@@ -23,7 +24,8 @@ internal class BTTSavedRemoteConfiguration(
     enableScreenTracking,
     enableGrouping,
     groupingIdleTime,
-    groupedViewSampleRate
+    groupedViewSampleRate,
+    configKey
 ) {
 
     companion object {
@@ -36,6 +38,7 @@ internal class BTTSavedRemoteConfiguration(
             remoteConfig.enableGrouping,
             remoteConfig.groupingIdleTime,
             remoteConfig.groupedViewSampleRate,
+            remoteConfig.configKey,
             System.currentTimeMillis()
         )
     }

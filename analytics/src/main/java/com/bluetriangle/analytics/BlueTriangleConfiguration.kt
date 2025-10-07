@@ -70,6 +70,11 @@ class BlueTriangleConfiguration {
     var cacheDirectory: String? = null
 
     /**
+     * Temp Cache directory path
+     */
+    internal var tempCacheDirectory: String? = null
+
+    /**
      * Max items in the cache
      */
     @Deprecated(message = "Max cache items has been replaced in favor of cacheMemoryLimit", replaceWith = ReplaceWith("cacheMemoryLimit"))

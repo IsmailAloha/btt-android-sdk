@@ -10,6 +10,8 @@ import com.bluetriangle.analytics.CrashRunnable
 import com.bluetriangle.analytics.Timer
 import com.bluetriangle.analytics.Tracker
 import com.bluetriangle.analytics.deviceinfo.IDeviceInfoProvider
+import com.bluetriangle.analytics.dynamicconfig.model.BTTRemoteConfiguration
+import com.bluetriangle.analytics.utility.PrefsDataStore
 
 internal class BTTConfigUpdateReporter(
     val configuration: BlueTriangleConfiguration,
@@ -20,13 +22,10 @@ internal class BTTConfigUpdateReporter(
         private const val CONFIG_UPDATE_PAGE_NAME = "BTTConfigUpdate"
     }
 
-    override fun reportSuccess() {
-        val timer = Timer()
-        timer.setPageName(CONFIG_UPDATE_PAGE_NAME)
-        timer.setTrafficSegmentName(CONFIG_UPDATE_PAGE_NAME)
-        timer.setContentGroupName(CONFIG_UPDATE_PAGE_NAME)
-        timer.startWithoutPerformanceMonitor()
-        timer.submit()
+    override fun reportSuccess(config: BTTRemoteConfiguration) {
+        config.configKey?.apply {
+            PrefsDataStore.setConfigKey(this)
+        }
     }
 
     override fun reportError(error: BTTConfigFetchError) {

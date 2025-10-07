@@ -41,7 +41,7 @@ internal class BTTConfigurationUpdater(
                 repository.save(result.config)
                 if (result.config.enableRemoteConfigAck) {
                     if (result.config != savedRemoteConfig) {
-                        reporter.reportSuccess()
+                        reporter.reportSuccess(result.config)
                     }
                 }
             }

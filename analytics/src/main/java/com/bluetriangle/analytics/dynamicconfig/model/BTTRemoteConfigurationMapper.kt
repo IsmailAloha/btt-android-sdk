@@ -11,6 +11,7 @@ import com.bluetriangle.analytics.utility.getBooleanOrNull
 import com.bluetriangle.analytics.utility.getDoubleOrNull
 import com.bluetriangle.analytics.utility.getIntOrNull
 import com.bluetriangle.analytics.utility.getJsonArrayOrNull
+import com.bluetriangle.analytics.utility.getStringOrNull
 import org.json.JSONObject
 
 internal object BTTRemoteConfigurationMapper {
@@ -23,6 +24,7 @@ internal object BTTRemoteConfigurationMapper {
     private const val GROUPING_IDLE_TIME = "groupingIdleTime"
     private const val ENABLE_SCREEN_TRACKING = "enableScreenTracking"
     private const val GROUPED_VIEW_SAMPLE_RATE = "groupedViewSampleRate"
+    private const val CONFIG_KEY = "configKey"
 
     fun fromJson(remoteConfigJson: JSONObject): BTTRemoteConfiguration {
         val networkSampleRate = remoteConfigJson.getIntOrNull(NETWORK_SAMPLE_RATE)?.div(100.0)
@@ -41,6 +43,7 @@ internal object BTTRemoteConfigurationMapper {
         val enableGrouping = remoteConfigJson.getBooleanOrNull(ENABLE_GROUPING) ?: DEFAULT_ENABLE_GROUPING
         val groupingIdleTime = remoteConfigJson.getIntOrNull(GROUPING_IDLE_TIME) ?: DEFAULT_GROUPING_IDLE_TIME
         val groupedViewSampleRate = remoteConfigJson.getDoubleOrNull(GROUPED_VIEW_SAMPLE_RATE)?.div(100.0)
+        val configKey = remoteConfigJson.getStringOrNull(CONFIG_KEY)
 
         return BTTRemoteConfiguration(
             networkSampleRate,
@@ -50,7 +53,8 @@ internal object BTTRemoteConfigurationMapper {
             enableScreenTracking,
             enableGrouping,
             groupingIdleTime,
-            groupedViewSampleRate
+            groupedViewSampleRate,
+            configKey
         )
     }
 }

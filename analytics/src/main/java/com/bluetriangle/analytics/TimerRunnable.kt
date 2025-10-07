@@ -2,6 +2,7 @@ package com.bluetriangle.analytics
 
 import com.bluetriangle.analytics.Timer.Companion.FIELD_NATIVE_APP
 import com.bluetriangle.analytics.breadcrumbs.UserEventsRunnable
+import com.bluetriangle.analytics.caching.PayloadTypeCache
 import com.bluetriangle.analytics.caching.classifier.CacheType
 import com.bluetriangle.analytics.networkcapture.CapturedRequestRunnable
 import org.json.JSONObject
@@ -28,6 +29,9 @@ internal class TimerRunnable(
     val timer: Timer,
     val shouldSendCapturedRequests: Boolean = true
 ) : Runnable {
+
+    private val payloadTimerCache = PayloadTypeCache(CacheType.Analytics, configuration)
+
     override fun run() {
         try {
             var connection: HttpsURLConnection? = null
@@ -41,6 +45,15 @@ internal class TimerRunnable(
             var userEventsCollections = Tracker.instance?.getUserEventsCollectionsForTimer(timer)
 
             timer.onSubmit()
+
+            val tempPayload = Payload(
+                url = configuration.trackerUrl,
+                data = payloadData,
+                type = CacheType.Analytics,
+                createdAt = System.currentTimeMillis()
+            )
+            payloadTimerCache.save(tempPayload)
+
             try {
                 val url = URL(configuration.trackerUrl)
                 connection = url.openConnection() as HttpsURLConnection
@@ -79,6 +92,8 @@ internal class TimerRunnable(
                         Tracker.instance?.submitPayload(nextCachedPayload)
                     }
                 }
+                payloadTimerCache.removePayload(tempPayload.id)
+
                 connection.getHeaderField(0)
             } catch (e: Exception) {
                 if (!capturedRequestCollections.isNullOrEmpty()) {

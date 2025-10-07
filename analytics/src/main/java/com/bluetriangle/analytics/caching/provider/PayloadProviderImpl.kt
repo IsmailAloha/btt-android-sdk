@@ -26,6 +26,15 @@ class PayloadProviderImpl(
         }
     }
 
+    override fun removeById(id: String, type: CacheType) {
+        if (directory.isDirectoryInvalid) return
+
+        val payloadFile = File(directory, "$id.${type.extension}")
+        if (payloadFile.exists()) {
+            payloadFile.delete()
+        }
+    }
+
     override fun getExpired(): List<PayloadComponent> {
         val currentTime = System.currentTimeMillis()
         return getAll().filter {

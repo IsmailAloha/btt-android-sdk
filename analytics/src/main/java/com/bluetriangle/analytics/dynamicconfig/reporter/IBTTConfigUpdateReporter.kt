@@ -5,9 +5,11 @@
  */
 package com.bluetriangle.analytics.dynamicconfig.reporter
 
+import com.bluetriangle.analytics.dynamicconfig.model.BTTRemoteConfiguration
+
 internal interface IBTTConfigUpdateReporter {
 
-    fun reportSuccess()
+    fun reportSuccess(config: BTTRemoteConfiguration)
 
     fun reportError(error: BTTConfigFetchError)
 

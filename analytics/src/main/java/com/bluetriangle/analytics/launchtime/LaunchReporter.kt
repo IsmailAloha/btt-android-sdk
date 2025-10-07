@@ -6,6 +6,7 @@ import com.bluetriangle.analytics.Logger
 import com.bluetriangle.analytics.Timer
 import com.bluetriangle.analytics.Tracker
 import com.bluetriangle.analytics.launchtime.model.LaunchEvent
+import com.bluetriangle.analytics.utility.PrefsDataStore
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -59,8 +60,10 @@ internal class LaunchReporter(
             generateNativeAppProperties()
             nativeAppProperties.loadTime = duration
             nativeAppProperties.launchScreenName = launchActivityName
+            nativeAppProperties.configKey = PrefsDataStore.getConfigKey()
             submit()
         }
 
+        PrefsDataStore.clearConfigKey()
     }
 }
