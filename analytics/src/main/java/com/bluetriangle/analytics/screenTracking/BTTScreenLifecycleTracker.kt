@@ -2,6 +2,7 @@ package com.bluetriangle.analytics.screenTracking
 
 import com.bluetriangle.analytics.Constants.TIMER_MIN_PGTM
 import com.bluetriangle.analytics.Timer
+import com.bluetriangle.analytics.Tracker
 import com.bluetriangle.analytics.model.Screen
 import com.bluetriangle.analytics.screenTracking.grouping.BTTTimerGroupManager
 import com.bluetriangle.analytics.model.ScreenType
@@ -81,7 +82,7 @@ internal class BTTScreenLifecycleTracker(
             groupManager.add(screen, timer)
             timer.startSilent()
         } else {
-            timer.start()
+            timer.startInternal()
         }
         loadTime[screen.toString()] = System.currentTimeMillis()
     }
@@ -99,7 +100,8 @@ internal class BTTScreenLifecycleTracker(
         if(grouped(automated)) {
             timer.end()
         } else {
-            timer.end().submit()
+            timer.end()
+            Tracker.instance?.screenComponentCollector?.collect(timer)
         }
         timers.remove(scr)
     }

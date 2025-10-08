@@ -17,7 +17,7 @@ internal class BtCrashHandler(
         val mostRecentTimer = Tracker.instance?.getMostRecentTimer()
         configuration.logger?.debug("Most Recent Timer: $mostRecentTimer")
 
-        val crashHitsTimer = Timer().startWithoutPerformanceMonitor()
+        val crashHitsTimer = Timer().startWithoutPerformanceMonitorInternal()
         if(mostRecentTimer != null) {
             mostRecentTimer.generateNativeAppProperties()
             crashHitsTimer.nativeAppProperties = mostRecentTimer.nativeAppProperties

@@ -35,7 +35,7 @@ internal class AnrManager(
 
         val timeStamp = System.currentTimeMillis().toString()
         val mostRecentTimer = Tracker.instance?.getMostRecentTimer()
-        val crashHitsTimer: Timer = Timer().startWithoutPerformanceMonitor()
+        val crashHitsTimer: Timer = Timer().startWithoutPerformanceMonitorInternal()
 
         crashHitsTimer.setPageName(mostRecentTimer?.getField(FIELD_PAGE_NAME)?:Tracker.BTErrorType.ANRWarning.value)
         if(mostRecentTimer != null) {

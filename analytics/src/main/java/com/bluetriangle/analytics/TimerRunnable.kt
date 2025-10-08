@@ -36,7 +36,7 @@ internal class TimerRunnable(
         try {
             var connection: HttpsURLConnection? = null
             val payloadData = buildTimerData()
-            var capturedRequestCollections = if(shouldSendCapturedRequests) {
+            var capturedRequestCollections = if (shouldSendCapturedRequests) {
                 Tracker.instance?.getCapturedRequestCollectionsForTimer(timer)
             } else {
                 configuration.logger?.info("shouldSendCapturedRequests is false, ignoring captured requests collections for timer: ${timer}")
@@ -70,7 +70,7 @@ internal class TimerRunnable(
                     CapturedRequestRunnable(configuration, capturedRequestCollections).run()
                     capturedRequestCollections = null
                 }
-                if(!userEventsCollections.isNullOrEmpty()) {
+                if (!userEventsCollections.isNullOrEmpty()) {
                     UserEventsRunnable(configuration, userEventsCollections).run()
                     userEventsCollections = null
                 }
@@ -99,7 +99,7 @@ internal class TimerRunnable(
                 if (!capturedRequestCollections.isNullOrEmpty()) {
                     CapturedRequestRunnable(configuration, capturedRequestCollections).run()
                 }
-                if(!userEventsCollections.isNullOrEmpty()) {
+                if (!userEventsCollections.isNullOrEmpty()) {
                     UserEventsRunnable(configuration, userEventsCollections).run()
                 }
                 configuration.logger?.error(e, "Android Error submitting $timer: ${e.message}")
@@ -107,7 +107,7 @@ internal class TimerRunnable(
             } finally {
                 connection?.disconnect()
             }
-        } catch(e: Exception) {
+        } catch (e: Exception) {
             configuration.logger?.error("Error while submitting timer: ${e.message}")
         }
     }

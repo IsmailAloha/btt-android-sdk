@@ -29,7 +29,7 @@ internal class BTTConfigUpdateReporter(
     }
 
     override fun reportError(error: BTTConfigFetchError) {
-        val crashHitsTimer: Timer = Timer().startWithoutPerformanceMonitor()
+        val crashHitsTimer: Timer = Timer().startWithoutPerformanceMonitorInternal()
 
         crashHitsTimer.setPageName(CONFIG_UPDATE_PAGE_NAME)
         crashHitsTimer.setTrafficSegmentName(CONFIG_UPDATE_PAGE_NAME)

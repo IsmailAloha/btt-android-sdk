@@ -77,7 +77,7 @@ internal class MemoryMonitor(
         configuration.logger?.debug("Memory Warning received ${memoryWarningException.count} times: Used: ${memoryWarningException.usedMemory}MB, Total: ${memoryWarningException.totalMemory}MB")
 
         val timeStamp = System.currentTimeMillis().toString()
-        val crashHitsTimer: Timer = Timer().startWithoutPerformanceMonitor()
+        val crashHitsTimer: Timer = Timer().startWithoutPerformanceMonitorInternal()
         crashHitsTimer.setPageName(timer.getField(FIELD_PAGE_NAME)?: Tracker.BTErrorType.MemoryWarning.value)
         crashHitsTimer.nativeAppProperties = timer.nativeAppProperties
         crashHitsTimer.nativeAppProperties.add(deviceInfoProvider.getDeviceInfo())

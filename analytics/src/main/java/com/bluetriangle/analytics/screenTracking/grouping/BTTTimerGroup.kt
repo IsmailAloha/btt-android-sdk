@@ -60,7 +60,7 @@ internal class BTTTimerGroup(
 
     init {
         logger?.debug("Group Started.. ${this.hashCode()}")
-        groupTimer.start()
+        groupTimer.startInternal()
         groupTimer.setTrafficSegmentName(AUTOMATED_TIMERS_PAGE_TYPE)
         groupTimer.setContentGroupName(AUTOMATED_TIMERS_PAGE_TYPE)
         resetIdleTimeout()

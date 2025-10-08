@@ -241,6 +241,14 @@ class Timer : Parcelable {
     fun start(): Timer {
         if(!isTrackingEnabled()) return this
 
+        startInternal()
+        tracker?.setMostRecentCustomTimer(this)
+        return this
+    }
+
+    internal fun startInternal(): Timer {
+        if(!isTrackingEnabled()) return this
+
         if (start == 0L) {
             start = System.currentTimeMillis()
             setField(FIELD_UNLOAD_EVENT_START, start)
@@ -259,6 +267,14 @@ class Timer : Parcelable {
             performanceMonitor = null
         }
         return start()
+    }
+
+    internal fun startWithoutPerformanceMonitorInternal(): Timer {
+        if (performanceMonitor != null) {
+            tracker?.clearPerformanceMonitor(performanceMonitor!!.id)
+            performanceMonitor = null
+        }
+        return startInternal()
     }
 
     /**
