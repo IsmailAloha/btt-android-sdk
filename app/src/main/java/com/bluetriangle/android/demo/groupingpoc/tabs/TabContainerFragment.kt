@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import com.bluetriangle.analytics.Timer
 import com.bluetriangle.android.demo.R
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -32,6 +33,8 @@ class TabContainerFragment : Fragment() {
         val adapter = TabsAdapter(requireActivity())
         viewPager.adapter = adapter
 
+        var tabsTimer = Timer("TabsTimer", "Android").start()
+
         // Register page change callback to track current position
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
@@ -43,6 +46,10 @@ class TabContainerFragment : Fragment() {
                     3 -> "Tab Four"
                     else -> "Tab Five"
                 })
+                if(position == 4) {
+                    tabsTimer.submit()
+                    tabsTimer = Timer("TabsTimer", "Android").start()
+                }
                 adapter.setCurrentPosition(position)
             }
         })

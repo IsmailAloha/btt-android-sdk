@@ -1,6 +1,6 @@
 package com.bluetriangle.analytics.screenTracking.componentcollector
 
-class MostRecentTimerData(
+data class MostRecentTimerData(
     val siteId: String?,
     val nst: Long,
     val trafficSegment: String?,

@@ -334,21 +334,12 @@ class Tracker private constructor(
     }
 
     // <PageName, StartTime>
-    internal var mostRecentCustomTimer: MostRecentTimerData? = null
+    internal var mostRecentCustomTimer: Timer? = null
 
     fun setMostRecentCustomTimer(timer: Timer) {
         timer.apply {
             screenComponentCollector.submit()
-            mostRecentCustomTimer = MostRecentTimerData(
-                getField(Timer.FIELD_SITE_ID),
-                timer.start,
-                getField(Timer.FIELD_TRAFFIC_SEGMENT_NAME),
-                getField(Timer.FIELD_CONTENT_GROUP_NAME),
-                getField(Timer.FIELD_SESSION_ID),
-                getField(Timer.FIELD_PAGE_NAME),
-                getField(Timer.FIELD_BROWSER_VERSION),
-                getField(Timer.FIELD_DEVICE)
-            )
+            mostRecentCustomTimer = timer
         }
     }
 

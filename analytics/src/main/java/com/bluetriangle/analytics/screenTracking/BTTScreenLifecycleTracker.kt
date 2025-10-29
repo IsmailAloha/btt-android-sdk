@@ -71,6 +71,10 @@ internal class BTTScreenLifecycleTracker(
             screen.onTitleUpdated = {
                 timers[screen.toString()]?.setPageName(screen.pageName(grouped(automated)))
             }
+        } else {
+            timers[screen.toString()]?.let {
+                Tracker.instance?.screenComponentCollector?.collect(it)
+            }
         }
     }
 
@@ -101,7 +105,6 @@ internal class BTTScreenLifecycleTracker(
             timer.end()
         } else {
             timer.end()
-            Tracker.instance?.screenComponentCollector?.collect(timer)
         }
         timers.remove(scr)
     }
