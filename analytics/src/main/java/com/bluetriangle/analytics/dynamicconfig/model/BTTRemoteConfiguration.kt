@@ -7,13 +7,20 @@ package com.bluetriangle.analytics.dynamicconfig.model
 
 internal open class BTTRemoteConfiguration(
     val networkSampleRate: Double?,
-    val ignoreScreens:List<String>,
+    val ignoreScreens: List<String>,
     val enableAllTracking: Boolean,
     val enableRemoteConfigAck: Boolean,
     val enableScreenTracking: Boolean,
     val enableGrouping: Boolean,
     val groupingIdleTime: Int,
-    val groupedViewSampleRate: Double?
+    val groupedViewSampleRate: Double?,
+    val enableGroupingTapDetection: Boolean,
+    val enableNetworkStateTracking: Boolean,
+    val enableCrashTracking: Boolean,
+    val enableANRTracking: Boolean,
+    val enableMemoryWarning: Boolean,
+    val enableLaunchTime: Boolean,
+    val enableWebViewStitching: Boolean
 ) {
     override fun equals(other: Any?): Boolean {
         if(other is BTTRemoteConfiguration) {
@@ -24,7 +31,14 @@ internal open class BTTRemoteConfiguration(
                     other.enableScreenTracking == enableScreenTracking &&
                     other.enableGrouping == enableGrouping &&
                     other.groupingIdleTime == groupingIdleTime &&
-                    other.groupedViewSampleRate == groupedViewSampleRate
+                    other.groupedViewSampleRate == groupedViewSampleRate &&
+                    other.enableGroupingTapDetection == enableGroupingTapDetection &&
+                    other.enableNetworkStateTracking == enableNetworkStateTracking &&
+                    other.enableCrashTracking == enableCrashTracking &&
+                    other.enableANRTracking == enableANRTracking &&
+                    other.enableMemoryWarning == enableMemoryWarning &&
+                    other.enableLaunchTime == enableLaunchTime &&
+                    other.enableWebViewStitching == enableWebViewStitching
         }
         return false
     }
@@ -42,6 +56,13 @@ internal open class BTTRemoteConfiguration(
         result = 31 * result + groupingIdleTime
         result = 31 * result + ignoreScreens.hashCode()
         result = 31 * result + groupedViewSampleRate.hashCode()
+        result = 31 * result + enableGroupingTapDetection.hashCode()
+        result = 31 * result + enableNetworkStateTracking.hashCode()
+        result = 31 * result + enableCrashTracking.hashCode()
+        result = 31 * result + enableANRTracking.hashCode()
+        result = 31 * result + enableMemoryWarning.hashCode()
+        result = 31 * result + enableLaunchTime.hashCode()
+        result = 31 * result + enableWebViewStitching.hashCode()
         return result
     }
 

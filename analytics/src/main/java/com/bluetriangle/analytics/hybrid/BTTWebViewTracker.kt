@@ -21,21 +21,26 @@ object BTTWebViewTracker {
 
             addWebView(view)
 
-            Tracker.instance?.configuration?.let {
-                val expiration = (System.currentTimeMillis() + (30 * 60 * 1000)).toString()
-                val sessionID = "{\"value\":\"${it.sessionId}\",\"expires\":\"$expiration\"}"
-
-                val wcdOn = if(it.shouldSampleNetwork) "on" else "off"
-                val wcdCollect = "{\"value\":\"$wcdOn\",\"expires\":\"$expiration\"}"
-                val sdkVersion = "Android-${BuildConfig.SDK_VERSION}"
-
-                view.setLocalStorage("BTT_X0siD", sessionID)
-                view.setLocalStorage("BTT_SDK_VER", sdkVersion)
-                view.setLocalStorage("BTT_WCD_Collect", wcdCollect)
-                Tracker.instance?.configuration?.logger?.info("Injected session ID and SDK version in WebView: BTT_X0siD: $sessionID, BTT_SDK_VER: $sdkVersion with expiration $expiration")
-            }
+            view.stitchWebViewSession()
         } catch (e: Exception) {
             Tracker.instance?.configuration?.logger?.error("Error while stitching WebView session: ${e.message}")
+        }
+    }
+
+    fun WebView.stitchWebViewSession() {
+        Tracker.instance?.configuration?.let {
+            if(!it.isWebViewStitchingEnabled) return@let
+            val expiration = (System.currentTimeMillis() + (30 * 60 * 1000)).toString()
+            val sessionID = "{\"value\":\"${it.sessionId}\",\"expires\":\"$expiration\"}"
+
+            val wcdOn = if(it.shouldSampleNetwork) "on" else "off"
+            val wcdCollect = "{\"value\":\"$wcdOn\",\"expires\":\"$expiration\"}"
+            val sdkVersion = "Android-${BuildConfig.SDK_VERSION}"
+
+            setLocalStorage("BTT_X0siD", sessionID)
+            setLocalStorage("BTT_SDK_VER", sdkVersion)
+            setLocalStorage("BTT_WCD_Collect", wcdCollect)
+            Tracker.instance?.configuration?.logger?.info("Injected session ID and SDK version in WebView: BTT_X0siD: $sessionID, BTT_SDK_VER: $sdkVersion with expiration $expiration")
         }
     }
 
@@ -56,7 +61,7 @@ object BTTWebViewTracker {
     internal fun updateSession(sessionId: String) {
         try {
             Looper.getMainLooper().runCatching {
-                webViews.forEach { webView ->
+                webViews.toList().forEach { webView ->
 
                     webView.get()?.let {
 

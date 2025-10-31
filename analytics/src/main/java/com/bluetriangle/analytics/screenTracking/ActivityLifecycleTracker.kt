@@ -27,9 +27,25 @@ internal class ActivityLifecycleTracker(private val screenTracker: ScreenLifecyc
         logEvent("onActivityCreated", activity)
         activities.add(activity)
         (activity as? FragmentActivity)?.registerFragmentLifecycleCallback(fragmentLifecycleTracker)
-        val originalCallback = activity.window.callback
-        activity.window.callback = TouchEventInterceptor(originalCallback)
+        activity.enableTapDetection()
         screenTracker.onLoadStarted(activity.screen, automated = true)
+    }
+
+    fun disableTapDetection() {
+        activities.toList().forEach {
+            it.disableTapDetection()
+        }
+    }
+
+    private fun Activity.enableTapDetection() {
+        val originalCallback = window.callback
+        window.callback = TouchEventInterceptor(originalCallback)
+    }
+
+    private fun Activity.disableTapDetection() {
+        (window.callback as? TouchEventInterceptor)?.originalCallback?.let {
+            window.callback = it
+        }
     }
 
     override fun onActivityStarted(activity: Activity) {

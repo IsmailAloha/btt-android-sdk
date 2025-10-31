@@ -15,6 +15,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.MutableLiveData;
 
 import com.bluetriangle.analytics.Timer;
+import com.bluetriangle.analytics.Tracker;
 import com.bluetriangle.analytics.okhttp.NetworkTracker;
 import com.bluetriangle.android.demo.DemoApplication;
 import com.bluetriangle.android.demo.HomeActivity;

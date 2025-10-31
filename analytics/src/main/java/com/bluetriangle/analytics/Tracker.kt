@@ -171,7 +171,7 @@ class Tracker private constructor(
             trackCrashes()
         }
 
-        initializeNetworkMonitoring()
+        initializeNetworkStateMonitoring()
         configuration.logger?.debug("SDK is enabled")
     }
 
@@ -184,7 +184,7 @@ class Tracker private constructor(
         deInitializeScreenTracker()
         deInitializeANRMonitor()
         stopTrackCrashes()
-        deInitializeNetworkMonitoring()
+        deInitializeNetworkStateMonitoring()
         configuration.logger?.debug("SDK is disabled.")
     }
 
@@ -270,7 +270,7 @@ class Tracker private constructor(
         activityLifecycleTracker = null
     }
 
-    private fun initializeNetworkMonitoring() {
+    private fun initializeNetworkStateMonitoring() {
         if (!configuration.isTrackNetworkStateEnabled) return
 
         val appContext = context.get()
@@ -300,7 +300,7 @@ class Tracker private constructor(
         configuration.logger?.debug("Network state monitoring started.")
     }
 
-    private fun deInitializeNetworkMonitoring() {
+    private fun deInitializeNetworkStateMonitoring() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             networkStateMonitor?.stop()
             networkTimelineTracker?.stop()
@@ -679,18 +679,6 @@ class Tracker private constructor(
             changes.append("\nshouldSampleGroupedView: ${configuration.shouldSampleGroupedView} -> ${sessionData.shouldSampleGroupedView}")
             configuration.shouldSampleGroupedView = sessionData.shouldSampleGroupedView
         }
-        if(configuration.isScreenTrackingEnabled != sessionData.enableScreenTracking) {
-            changes.append("\nisScreenTrackingEnabled: ${configuration.isScreenTrackingEnabled} -> ${sessionData.enableScreenTracking}")
-            configuration.isScreenTrackingEnabled = sessionData.enableScreenTracking
-
-            if(configuration.isScreenTrackingEnabled) {
-                initializeScreenTracker()
-            } else {
-                deInitializeScreenTracker()
-            }
-        } else if(screenTrackMonitor?.ignoreScreens != sessionData.ignoreScreens) {
-            screenTrackMonitor?.ignoreScreens = sessionData.ignoreScreens
-        }
 
         if(configuration.isGroupingEnabled != sessionData.enableGrouping) {
             changes.append("\nisGroupingEnabled: ${configuration.isGroupingEnabled} -> ${sessionData.enableGrouping}")
@@ -704,6 +692,68 @@ class Tracker private constructor(
             screenTrackMonitor?.groupIdleTime = configuration.groupingIdleTime
         }
 
+        if(configuration.isGroupingTapDetectionEnabled != sessionData.enableGroupingTapDetection) {
+            changes.append("\nenableGroupingTapDetection: ${configuration.isGroupingTapDetectionEnabled} -> ${sessionData.groupingIdleTime}")
+            configuration.isGroupingTapDetectionEnabled = sessionData.enableGroupingTapDetection
+        }
+
+        if(configuration.isTrackNetworkStateEnabled != sessionData.enableNetworkStateTracking) {
+            changes.append("\nenableNetworkStateTracking: ${configuration.isTrackNetworkStateEnabled} -> ${sessionData.enableNetworkStateTracking}")
+            configuration.isTrackNetworkStateEnabled = sessionData.enableNetworkStateTracking
+            if(configuration.isTrackNetworkStateEnabled) {
+                initializeNetworkStateMonitoring()
+            } else {
+                deInitializeNetworkStateMonitoring()
+            }
+        }
+
+        if(configuration.isTrackCrashesEnabled != sessionData.enableCrashTracking) {
+            changes.append("\nenableCrashTracking: ${configuration.isTrackCrashesEnabled} -> ${sessionData.enableCrashTracking}")
+            configuration.isTrackCrashesEnabled = sessionData.enableCrashTracking
+            if(configuration.isTrackCrashesEnabled) {
+                trackCrashes()
+            } else {
+                stopTrackCrashes()
+            }
+        }
+
+        if(configuration.isTrackAnrEnabled != sessionData.enableANRTracking) {
+            changes.append("\nenableANRTracking: ${configuration.isTrackAnrEnabled} -> ${sessionData.enableANRTracking}")
+            configuration.isTrackAnrEnabled = sessionData.enableANRTracking
+            if(configuration.isTrackAnrEnabled) {
+                initializeANRMonitor()
+            } else {
+                deInitializeANRMonitor()
+            }
+        }
+
+        if(configuration.isMemoryWarningEnabled != sessionData.enableMemoryWarning) {
+            changes.append("\nenableMemoryWarning: ${configuration.isMemoryWarningEnabled} -> ${sessionData.enableMemoryWarning}")
+            configuration.isMemoryWarningEnabled = sessionData.enableMemoryWarning
+        }
+
+        if(configuration.isLaunchTimeEnabled != sessionData.enableLaunchTime) {
+            changes.append("\nenableLaunchTime: ${configuration.isLaunchTimeEnabled} -> ${sessionData.enableLaunchTime}")
+            configuration.isLaunchTimeEnabled = sessionData.enableLaunchTime
+        }
+
+        if(configuration.isWebViewStitchingEnabled != sessionData.enableWebViewStitching) {
+            changes.append("\nenableWebViewStitching: ${configuration.isWebViewStitchingEnabled} -> ${sessionData.enableWebViewStitching}")
+            configuration.isWebViewStitchingEnabled = sessionData.enableWebViewStitching
+        }
+
+        if(configuration.isScreenTrackingEnabled != sessionData.enableScreenTracking) {
+            changes.append("\nisScreenTrackingEnabled: ${configuration.isScreenTrackingEnabled} -> ${sessionData.enableScreenTracking}")
+            configuration.isScreenTrackingEnabled = sessionData.enableScreenTracking
+
+            if(configuration.isScreenTrackingEnabled) {
+                initializeScreenTracker()
+            } else {
+                deInitializeScreenTracker()
+            }
+        } else if(screenTrackMonitor?.ignoreScreens != sessionData.ignoreScreens) {
+            screenTrackMonitor?.ignoreScreens = sessionData.ignoreScreens
+        }
         val changesString = changes.toString()
         if(changesString.isNotEmpty()) {
             configuration.logger?.debug("Updated configuration $changesString")
@@ -941,7 +991,14 @@ class Tracker private constructor(
                 enableScreenTracking = configuration.isScreenTrackingEnabled,
                 enableGrouping = configuration.isGroupingEnabled,
                 groupingIdleTime = configuration.groupingIdleTime,
-                groupedViewSampleRate = configuration.groupedViewSampleRate
+                groupedViewSampleRate = configuration.groupedViewSampleRate,
+                enableGroupingTapDetection = configuration.isGroupingTapDetectionEnabled,
+                enableNetworkStateTracking = configuration.isTrackNetworkStateEnabled,
+                enableCrashTracking = configuration.isTrackCrashesEnabled,
+                enableANRTracking = configuration.isTrackAnrEnabled,
+                enableMemoryWarning = configuration.isMemoryWarningEnabled,
+                enableLaunchTime = configuration.isLaunchTimeEnabled,
+                enableWebViewStitching = configuration.isWebViewStitchingEnabled
             )
 
             initializeConfigurationUpdater(application, configuration, defaultConfig)
