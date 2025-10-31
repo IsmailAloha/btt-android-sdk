@@ -30,6 +30,13 @@ internal class DisabledModeSessionManager(
         groupingIdleTime = Constants.DEFAULT_GROUPING_IDLE_TIME,
         groupedViewSampleRate = 0.0,
         shouldSampleGroupedView = false,
+        enableGroupingTapDetection = false,
+        enableNetworkStateTracking = false,
+        enableCrashTracking = false,
+        enableANRTracking = false,
+        enableMemoryWarning = false,
+        enableLaunchTime = false,
+        enableWebViewStitching = false,
         expiration = 0L
     )
 

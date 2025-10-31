@@ -35,4 +35,9 @@ class DemoMainActivity : AppCompatActivity() {
             }
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+        this::class.java.simpleName
+    }
 }
