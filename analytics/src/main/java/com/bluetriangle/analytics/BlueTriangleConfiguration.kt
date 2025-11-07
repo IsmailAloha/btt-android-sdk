@@ -183,6 +183,9 @@ class BlueTriangleConfiguration {
 
     internal var isWebViewStitchingEnabled: Boolean = DEFAULT_ENABLE_WEB_VIEW_STITCHING
 
+    internal val shouldDetectTap: Boolean
+        get() = isGroupingEnabled && isGroupingTapDetectionEnabled
+
     companion object {
         const val DEFAULT_TRACKER_URL = "https://d.btttag.com/analytics.rcv"
         const val DEFAULT_ERROR_REPORTING_URL = "https://d.btttag.com/err.rcv"

@@ -242,7 +242,7 @@ class Tracker private constructor(
         ).also {
             val fragmentLifecycleTracker = FragmentLifecycleTracker(it)
             activityLifecycleTracker = ActivityLifecycleTracker(
-                it, fragmentLifecycleTracker
+                configuration, it, fragmentLifecycleTracker
             )
             (context.get()?.applicationContext as? Application)?.registerActivityLifecycleCallbacks(
                 activityLifecycleTracker
@@ -695,6 +695,11 @@ class Tracker private constructor(
         if(configuration.isGroupingTapDetectionEnabled != sessionData.enableGroupingTapDetection) {
             changes.append("\nenableGroupingTapDetection: ${configuration.isGroupingTapDetectionEnabled} -> ${sessionData.groupingIdleTime}")
             configuration.isGroupingTapDetectionEnabled = sessionData.enableGroupingTapDetection
+            if(configuration.shouldDetectTap) {
+                activityLifecycleTracker?.enableTapDetection()
+            } else {
+                activityLifecycleTracker?.disableTapDetection()
+            }
         }
 
         if(configuration.isTrackNetworkStateEnabled != sessionData.enableNetworkStateTracking) {
