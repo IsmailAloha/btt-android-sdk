@@ -60,6 +60,7 @@ internal class ActivityLifecycleTracker(
     }
 
     private fun Activity.disableTapDetection() {
+        Tracker.instance?.lastTouchEventTimestamp = 0L
         (window.callback as? TouchEventInterceptor)?.originalCallback?.let {
             window.callback = it
         }

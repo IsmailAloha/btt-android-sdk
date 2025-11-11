@@ -693,7 +693,7 @@ class Tracker private constructor(
         }
 
         if(configuration.isGroupingTapDetectionEnabled != sessionData.enableGroupingTapDetection) {
-            changes.append("\nenableGroupingTapDetection: ${configuration.isGroupingTapDetectionEnabled} -> ${sessionData.groupingIdleTime}")
+            changes.append("\nenableGroupingTapDetection: ${configuration.isGroupingTapDetectionEnabled} -> ${sessionData.enableGroupingTapDetection}")
             configuration.isGroupingTapDetectionEnabled = sessionData.enableGroupingTapDetection
             if(configuration.shouldDetectTap) {
                 activityLifecycleTracker?.enableTapDetection()
