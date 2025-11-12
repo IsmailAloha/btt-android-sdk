@@ -24,16 +24,21 @@ internal class AppEventHub private constructor(): AppEventConsumer {
 
     private val consumers = arrayListOf<WeakReference<AppEventConsumer>>()
 
+    @Synchronized
     fun addConsumer(consumer: AppEventConsumer) {
-        consumers.add(WeakReference(consumer))
+        if(consumers.find { it.get() == consumer } == null) {
+            consumers.add(WeakReference(consumer))
+        }
     }
 
+    @Synchronized
     fun removeConsumer(consumer: AppEventConsumer) {
         consumers.removeAll { reference -> reference.get() == consumer }
     }
 
     private val activityEventHandler = ActivityEventHandler()
 
+    @Synchronized
     private fun notifyConsumers(notify:(AppEventConsumer)-> Unit) {
         consumers.forEach {
             val consumer = it.get()

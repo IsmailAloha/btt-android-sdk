@@ -25,13 +25,18 @@ internal class LaunchMonitor private constructor(): AppEventConsumer, LaunchEven
         private const val LOG_BUFFER_SIZE = 30
         private var _instance:LaunchMonitor?=null
 
-        val instance:LaunchMonitor
+        fun init() {
+            _instance = LaunchMonitor()
+        }
+
+        val instance:LaunchMonitor?
             get() {
-                if(_instance == null) {
-                    _instance = LaunchMonitor()
-                }
-                return _instance!!
+                return _instance
             }
+
+        fun clearInstance() {
+            _instance = null
+        }
     }
 
     private val appEventAccumulator = AppEventAccumulator(this)
@@ -40,6 +45,7 @@ internal class LaunchMonitor private constructor(): AppEventConsumer, LaunchEven
     override val logs: List<LogData>
         get() = _logs
 
+    @Synchronized
     override fun log(logData: LogData) {
         if(Tracker.instance != null) {
             Tracker.instance?.configuration?.logger?.log(logData.level, logData.message)
@@ -49,6 +55,11 @@ internal class LaunchMonitor private constructor(): AppEventConsumer, LaunchEven
             _logs.removeAt(0)
         }
         _logs.add(logData)
+    }
+
+    @Synchronized
+    override fun clearLogs() {
+        _logs.clear()
     }
 
     init {

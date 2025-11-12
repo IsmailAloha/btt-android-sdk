@@ -118,6 +118,8 @@ class Tracker private constructor(
     private val claritySessionConnector:ClaritySessionConnector
     internal val appVersion: String
 
+    private var launchReporter: LaunchReporter? = null
+
     init {
         this.context = WeakReference(application.applicationContext)
         this.configuration = configuration
@@ -134,19 +136,35 @@ class Tracker private constructor(
         setGlobalUserId(globalUserId)
         configuration.globalUserId = globalUserId
 
-        if (configuration.isLaunchTimeEnabled) {
-            logLaunchMonitorErrors()
-            LaunchReporter(configuration.logger, LaunchMonitor.instance)
-        }
         enable()
         configuration.logger?.debug("BlueTriangleSDK Initialized: $configuration")
     }
 
+    private fun enableLaunchMonitor() {
+        LaunchMonitor.init()
+        LaunchMonitor.instance?.let {
+            AppEventHub.instance.addConsumer(it)
+            logLaunchMonitorErrors()
+            launchReporter = LaunchReporter(configuration.logger, it)
+            launchReporter?.start()
+        }
+    }
+
+    private fun disableLaunchMonitor() {
+        launchReporter?.stop()
+        launchReporter = null
+        LaunchMonitor.instance?.let {
+            AppEventHub.instance.removeConsumer(it)
+        }
+        LaunchMonitor.clearInstance()
+    }
+
     private fun logLaunchMonitorErrors() {
-        val logs = LaunchMonitor.instance.logs
+        val logs = LaunchMonitor.instance?.logs?:return
         for (log in logs) {
             configuration.logger?.log(log.level, log.message)
         }
+        LaunchMonitor.instance?.clearLogs()
     }
 
     @Synchronized
@@ -171,6 +189,9 @@ class Tracker private constructor(
             trackCrashes()
         }
 
+        if(configuration.isLaunchTimeEnabled) {
+            enableLaunchMonitor()
+        }
         initializeNetworkStateMonitoring()
         configuration.logger?.debug("SDK is enabled")
     }
@@ -185,6 +206,7 @@ class Tracker private constructor(
         deInitializeANRMonitor()
         stopTrackCrashes()
         deInitializeNetworkStateMonitoring()
+        disableLaunchMonitor()
         configuration.logger?.debug("SDK is disabled.")
     }
 
@@ -740,6 +762,11 @@ class Tracker private constructor(
         if(configuration.isLaunchTimeEnabled != sessionData.enableLaunchTime) {
             changes.append("\nenableLaunchTime: ${configuration.isLaunchTimeEnabled} -> ${sessionData.enableLaunchTime}")
             configuration.isLaunchTimeEnabled = sessionData.enableLaunchTime
+            if(configuration.isLaunchTimeEnabled) {
+                enableLaunchMonitor()
+            } else {
+                disableLaunchMonitor()
+            }
         }
 
         if(configuration.isWebViewStitchingEnabled != sessionData.enableWebViewStitching) {
