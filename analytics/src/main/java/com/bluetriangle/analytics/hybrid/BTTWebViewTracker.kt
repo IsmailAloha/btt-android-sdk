@@ -27,7 +27,7 @@ object BTTWebViewTracker {
         }
     }
 
-    fun WebView.stitchWebViewSession() {
+    private fun WebView.stitchWebViewSession() {
         Tracker.instance?.configuration?.let {
             if(!it.isWebViewStitchingEnabled) return@let
             val expiration = (System.currentTimeMillis() + (30 * 60 * 1000)).toString()
