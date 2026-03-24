@@ -162,7 +162,7 @@ class CapturedRequest {
     }
 
     override fun toString(): String {
-        return "CapturedRequest{ $host...$file $requestType $duration $encodedBodySize }"
+        return "CapturedRequest{ $url : $host...$file $requestType $duration $encodedBodySize }"
     }
 
     companion object {
