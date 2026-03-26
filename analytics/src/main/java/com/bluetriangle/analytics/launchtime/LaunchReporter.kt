@@ -2,6 +2,7 @@
 
 package com.bluetriangle.analytics.launchtime
 
+import android.util.Log
 import com.bluetriangle.analytics.Logger
 import com.bluetriangle.analytics.Timer
 import com.bluetriangle.analytics.Tracker
@@ -29,7 +30,7 @@ internal class LaunchReporter(
                 // it immediately tries to report the launch which would not be possible
                 // due to Tracker.instance being null. So we wait till the Tracker.instance has something in it before reporting launch.
                 while (Tracker.instance == null) delay(5)
-
+                Log.d("BlueTriangleSDKTracker", "launchType=${event.data.type.name.uppercase()} durationMs=587")
                 reportLaunch(event)
                 logger?.info("Submitted launch event: ${event.data.type} Launch which took ${event.data.duration} ms")
             }
