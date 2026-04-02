@@ -204,7 +204,7 @@ internal class CrashRunnable(
     private fun buildCrashReportData(): String {
         val crashReport = mutableMapOf<String, Any?>(
             "msg" to stackTrace,
-            "eTp" to errorType.errorName,
+            "eTp" to errorType.errorType,
             "eCnt" to errorCount.toString(),
             "url" to configuration.applicationName,
             "line" to "1",

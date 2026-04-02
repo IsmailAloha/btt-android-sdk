@@ -30,9 +30,8 @@ internal class LaunchReporter(
                 // it immediately tries to report the launch which would not be possible
                 // due to Tracker.instance being null. So we wait till the Tracker.instance has something in it before reporting launch.
                 while (Tracker.instance == null) delay(5)
-                Log.d("BlueTriangleSDKTracker", "launchType=${event.data.type.name.uppercase()} durationMs=${event.data.duration}")
                 reportLaunch(event)
-                logger?.info("Submitted launch event: ${event.data.type} Launch which took ${event.data.duration} ms")
+                logger?.debug("Submitted launch event, launchType=${event.data.type}, durationMs=${event.data.duration}")
             }
         }
     }

@@ -1179,6 +1179,12 @@ class Tracker private constructor(
         MemoryWarning(BTTEvent.MemoryWarning),
         BTTConfigUpdateError;
 
+        val errorType: String
+            get() = when(this) {
+                BTTConfigUpdateError -> "BTTConfigUpdate"
+                else -> name
+            }
+
         val errorName: String
             get() = when(this) {
                 BTTConfigUpdateError -> "BTTConfigUpdate"

@@ -3,7 +3,10 @@ package com.bluetriangle.analytics.compose
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.NonRestartableComposable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.platform.LocalView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Lifecycle.Event.ON_CREATE
 import androidx.lifecycle.Lifecycle.Event.ON_RESUME
@@ -11,10 +14,12 @@ import androidx.lifecycle.Lifecycle.Event.ON_START
 import androidx.lifecycle.Lifecycle.Event.ON_STOP
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.navigation.NavController
 import com.bluetriangle.analytics.Tracker
 import com.bluetriangle.analytics.lifecycle.LifecycleRegistry
 import com.bluetriangle.analytics.model.Screen
 import com.bluetriangle.analytics.model.ScreenType
+import com.bluetriangle.analytics.screenTracking.BTTScreenTracker
 import com.bluetriangle.analytics.screenTracking.ScreenLifecycleTracker
 
 @Composable
@@ -29,6 +34,33 @@ fun BttTimerEffect(screenName: String) {
         onDispose {
             LifecycleRegistry.onLeaveComposition(screenName)
             lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+}
+
+@Composable
+fun BTTTrackNavigation(navController: NavController) {
+    val view = LocalView.current
+    val currentLocationTracker = remember { mutableStateOf<BTTScreenTracker?>(null) }
+
+    DisposableEffect(navController) {
+        val listener = NavController.OnDestinationChangedListener { _, destination, arguments ->
+            val screenName = (destination.label ?: destination.route
+                ?.substringBefore("/")?.substringAfterLast(".")) ?: "unknown"
+
+            currentLocationTracker.value?.onViewEnded()
+            currentLocationTracker.value = BTTScreenTracker(screenName.toString())
+            currentLocationTracker.value?.onLoadStarted()
+            ScreenLoadTracker(view).trackScreenLoad {
+                currentLocationTracker.value?.onLoadEnded()
+            }
+        }
+
+        navController.addOnDestinationChangedListener(listener)
+
+        onDispose {
+            currentLocationTracker.value?.onViewEnded()
+            navController.removeOnDestinationChangedListener(listener)
         }
     }
 }
