@@ -3,12 +3,21 @@ package com.bluetriangle.analytics.screenTracking
 import android.app.Activity
 import android.app.Application
 import android.os.Bundle
+import android.util.Log
+import android.util.StatsLog.logEvent
+import android.view.View
+import androidx.activity.ComponentActivity
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.coroutineScope
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
+import androidx.navigation.Navigation.findNavController
 import com.bluetriangle.analytics.BlueTriangleConfiguration
 import com.bluetriangle.analytics.Tracker
 import com.bluetriangle.analytics.utility.registerFragmentLifecycleCallback
 import com.bluetriangle.analytics.utility.screen
 import com.bluetriangle.analytics.utility.unregisterFragmentLifecycleCallback
+import kotlinx.coroutines.launch
 
 internal class ActivityLifecycleTracker(
     private val configuration: BlueTriangleConfiguration,
@@ -87,7 +96,41 @@ internal class ActivityLifecycleTracker(
         val screen = activity.screen
         screen.fetchTitle(activity)
         screenTracker.onViewStarted(screen, automated = true)
+
+        attachNavControllerObserver(activity)
     }
+
+    private fun attachNavControllerObserver(activity: Activity) {
+        if (activity !is ComponentActivity) return
+
+        activity.lifecycle.coroutineScope.launch {
+            // Find NavController from the activity's view tree
+            val navController = findNavController(activity)
+            Log.d("NavigationStack", "NavController: $navController")
+
+            if(navController == null) {
+                return@launch
+            }
+
+            navController.addOnDestinationChangedListener { _, destination, args ->
+                val screenName = (destination.label ?: destination.route
+                    ?.substringBefore("/")?.substringAfterLast(".")) ?: "unknown"
+
+                Log.d("NavigationStack", "screenName: $screenName")
+            }
+        }
+    }
+
+    private fun findNavController(activity: ComponentActivity): NavController? {
+        return try {
+            // ComposeView hosts the NavHost — find it via view tree
+            val composeView = activity.window.decorView
+            .findViewWithTag<View>("nav_host") // needs tag OR:
+            Navigation.findNavController(composeView)
+            } catch (e: Exception) {
+            null // NavController not set up yet, retry on next resume
+            }
+        }
 
     override fun onActivityPaused(activity: Activity) {
         logEvent("onActivityPaused", activity)
