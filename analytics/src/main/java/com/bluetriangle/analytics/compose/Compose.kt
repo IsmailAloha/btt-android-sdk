@@ -39,7 +39,8 @@ fun BttTimerEffect(screenName: String) {
 }
 
 @Composable
-fun BTTTrackNavigation(navController: NavController) {
+@NonRestartableComposable
+fun NavController.withBttNavigationTracker(navController: NavController) {
     val view = LocalView.current
     val currentLocationTracker = remember { mutableStateOf<BTTScreenTracker?>(null) }
 
