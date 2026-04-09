@@ -15,6 +15,7 @@ import androidx.lifecycle.Lifecycle.Event.ON_STOP
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.bluetriangle.analytics.Tracker
 import com.bluetriangle.analytics.lifecycle.LifecycleRegistry
 import com.bluetriangle.analytics.model.Screen
@@ -40,11 +41,11 @@ fun BttTimerEffect(screenName: String) {
 
 @Composable
 @NonRestartableComposable
-fun NavController.withBttNavigationTracker(navController: NavController) {
+fun NavHostController.withBttNavigationTracker(): NavHostController {
     val view = LocalView.current
     val currentLocationTracker = remember { mutableStateOf<BTTScreenTracker?>(null) }
 
-    DisposableEffect(navController) {
+    DisposableEffect(this) {
         val listener = NavController.OnDestinationChangedListener { _, destination, arguments ->
             val screenName = (destination.label ?: destination.route
                 ?.substringBefore("/")?.substringAfterLast(".")) ?: "unknown"
@@ -57,13 +58,15 @@ fun NavController.withBttNavigationTracker(navController: NavController) {
             }
         }
 
-        navController.addOnDestinationChangedListener(listener)
+        this@withBttNavigationTracker.addOnDestinationChangedListener(listener)
 
         onDispose {
             currentLocationTracker.value?.onViewEnded()
-            navController.removeOnDestinationChangedListener(listener)
+            this@withBttNavigationTracker.removeOnDestinationChangedListener(listener)
         }
     }
+
+    return this
 }
 
 internal class ComposableLifecycleObserver(
