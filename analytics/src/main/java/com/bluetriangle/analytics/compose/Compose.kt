@@ -1,10 +1,14 @@
 package com.bluetriangle.analytics.compose
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.NonRestartableComposable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshotFlow
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalView
 import androidx.lifecycle.Lifecycle
@@ -22,6 +26,7 @@ import com.bluetriangle.analytics.model.Screen
 import com.bluetriangle.analytics.model.ScreenType
 import com.bluetriangle.analytics.screenTracking.BTTScreenTracker
 import com.bluetriangle.analytics.screenTracking.ScreenLifecycleTracker
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 @NonRestartableComposable
@@ -66,6 +71,19 @@ fun NavHostController.withBttNavigationTracker(): NavHostController {
         }
     }
 
+    return this
+}
+
+@Composable
+@NonRestartableComposable
+fun <T: Any> List<T>.bttTrackBackStack():List<T> {
+    LaunchedEffect(this) {
+        snapshotFlow {
+            lastOrNull()
+        }.collectLatest {
+            Log.d("BackStackLog", "stack = ${it?.javaClass?.simpleName}")
+        }
+    }
     return this
 }
 
