@@ -20,6 +20,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import androidx.navigation3.scene.SceneState
 import com.bluetriangle.analytics.Tracker
 import com.bluetriangle.analytics.lifecycle.LifecycleRegistry
 import com.bluetriangle.analytics.model.Screen
@@ -76,12 +77,12 @@ fun NavHostController.withBttNavigationTracker(): NavHostController {
 
 @Composable
 @NonRestartableComposable
-fun <T: Any> List<T>.bttTrackBackStack():List<T> {
+fun <T: Any> SceneState<T>.bttTrackBackStack():SceneState<T> {
     LaunchedEffect(this) {
         snapshotFlow {
-            lastOrNull()
+            entries.lastOrNull()
         }.collectLatest {
-            Log.d("BackStackLog", "stack = ${it?.javaClass?.simpleName}")
+            Log.d("BackStackLog", "lastEntry = ${it?.contentKey?.javaClass?.name}")
         }
     }
     return this
