@@ -81,9 +81,30 @@ fun <T: Any> SceneState<T>.bttTrackBackStack():SceneState<T> {
     LaunchedEffect(this) {
         snapshotFlow {
             entries.lastOrNull()
-        }.collectLatest {
-            Log.d("BackStackLog", "lastEntry = ${it?.contentKey?.javaClass?.name}")
-        }
+        }.collectLatest { entry ->
+            val key = entry?.contentKey
+
+            val keyString = when (key) {
+                null -> "null"
+                is String -> key
+                else -> key::class.java.name
+            }
+
+            // Metadata extraction (safe fallback approach)
+            val metadataString = entry?.metadata?.let {
+                buildString {
+                    it.forEach { (key, value) ->
+                        append(key)
+                        append("=")
+                        append(value.toString())
+                    }
+                }
+            } ?: "null"
+
+            Log.d(
+                "BackStackLog",
+                "lastEntry = $keyString, $metadataString"
+            )        }
     }
     return this
 }
