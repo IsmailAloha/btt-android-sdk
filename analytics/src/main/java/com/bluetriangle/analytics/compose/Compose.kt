@@ -28,6 +28,7 @@ import com.bluetriangle.analytics.model.ScreenType
 import com.bluetriangle.analytics.screenTracking.BTTScreenTracker
 import com.bluetriangle.analytics.screenTracking.ScreenLifecycleTracker
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
 
 @Composable
 @NonRestartableComposable
@@ -78,33 +79,28 @@ fun NavHostController.withBttNavigationTracker(): NavHostController {
 @Composable
 @NonRestartableComposable
 fun <T: Any> SceneState<T>.bttTrackBackStack():SceneState<T> {
+    val currentLocationTracker = remember { mutableStateOf<BTTScreenTracker?>(null) }
+    val view = LocalView.current
+
     LaunchedEffect(this) {
         snapshotFlow {
-            entries.lastOrNull()
-        }.collectLatest { entry ->
-            val key = entry?.contentKey
-
-            val keyString = when (key) {
-                null -> "null"
+            entries.lastOrNull()?.contentKey
+        }
+        .distinctUntilChanged()
+        .collectLatest { key ->
+            val screenName = when (key) {
+                null -> "unknown"
                 is String -> key
                 else -> key::class.java.name
             }
 
-            // Metadata extraction (safe fallback approach)
-            val metadataString = entry?.metadata?.let {
-                buildString {
-                    it.forEach { (key, value) ->
-                        append(key)
-                        append("=")
-                        append(value.toString())
-                    }
-                }
-            } ?: "null"
-
-            Log.d(
-                "BackStackLog",
-                "lastEntry = $keyString, $metadataString"
-            )        }
+            currentLocationTracker.value?.onViewEnded()
+            currentLocationTracker.value = BTTScreenTracker(screenName.toString())
+            currentLocationTracker.value?.onLoadStarted()
+            ScreenLoadTracker(view).trackScreenLoad {
+                currentLocationTracker.value?.onLoadEnded()
+            }
+        }
     }
     return this
 }
