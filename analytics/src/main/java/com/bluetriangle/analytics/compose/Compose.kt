@@ -49,8 +49,8 @@ fun BttTimerEffect(screenName: String) {
 @Composable
 @NonRestartableComposable
 fun NavHostController.withBttNavigationTracker(): NavHostController {
-    val view = LocalView.current
     val currentLocationTracker = remember { mutableStateOf<BTTScreenTracker?>(null) }
+    val loadTracker = ScreenLoadTracker(LocalView.current)
 
     DisposableEffect(this) {
         val listener = NavController.OnDestinationChangedListener { _, destination, arguments ->
@@ -60,7 +60,7 @@ fun NavHostController.withBttNavigationTracker(): NavHostController {
             currentLocationTracker.value?.onViewEnded()
             currentLocationTracker.value = BTTScreenTracker(screenName.toString())
             currentLocationTracker.value?.onLoadStarted()
-            ScreenLoadTracker(view).trackScreenLoad {
+            loadTracker.trackScreenLoad {
                 currentLocationTracker.value?.onLoadEnded()
             }
         }
@@ -80,7 +80,7 @@ fun NavHostController.withBttNavigationTracker(): NavHostController {
 @NonRestartableComposable
 fun <T: Any> SceneState<T>.bttTrackBackStack():SceneState<T> {
     val currentLocationTracker = remember { mutableStateOf<BTTScreenTracker?>(null) }
-    val view = LocalView.current
+    val loadTracker = ScreenLoadTracker(LocalView.current)
 
     LaunchedEffect(this) {
         snapshotFlow {
@@ -91,13 +91,13 @@ fun <T: Any> SceneState<T>.bttTrackBackStack():SceneState<T> {
             val screenName = when (key) {
                 null -> "unknown"
                 is String -> key
-                else -> key::class.java.name
+                else -> key::class.java.simpleName
             }
 
             currentLocationTracker.value?.onViewEnded()
             currentLocationTracker.value = BTTScreenTracker(screenName.toString())
             currentLocationTracker.value?.onLoadStarted()
-            ScreenLoadTracker(view).trackScreenLoad {
+            loadTracker.trackScreenLoad {
                 currentLocationTracker.value?.onLoadEnded()
             }
         }

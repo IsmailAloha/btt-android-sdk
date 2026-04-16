@@ -5,5 +5,9 @@
             android:authorities="${applicationId}.bttprovider"
             android:name=".BlueTriangleContentProvider"
             android:exported="false"/>
+
+        <meta-data
+            android:name="com.blue-triangle.plugin.version"
+            android:value="${bttPluginVersion}" />
     </application>
 </manifest>
