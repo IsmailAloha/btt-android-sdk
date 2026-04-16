@@ -23,6 +23,8 @@ internal object MetadataReader {
     private const val CACHE_EXPIRY = "com.blue-triangle.cache.expiry"
     private const val TRACK_NETWORK_STATE_ENABLE = "com.blue-triangle.track-network-state.enable"
 
+    private const val BTT_PLUGIN_VERSION = "com.blue-triangle.plugin.version"
+
     fun applyMetadata(context: Context, configuration: BlueTriangleConfiguration) {
         try {
             val metadata = getMetadata(context)
@@ -73,6 +75,8 @@ internal object MetadataReader {
                 )
                 configuration.isTrackNetworkStateEnabled =
                     readBool(metadata, TRACK_NETWORK_STATE_ENABLE, configuration.isTrackNetworkStateEnabled)
+                configuration.bttPluginVersion = readString(metadata, BTT_PLUGIN_VERSION, configuration.bttPluginVersion)
+                configuration.logger?.debug("bttPluginVersion: ${configuration.bttPluginVersion}")
             }
         } catch (e: Throwable) {
             configuration.logger?.error(e, "Error reading metadata configuration")
