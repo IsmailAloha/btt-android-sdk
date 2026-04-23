@@ -14,7 +14,10 @@ import com.bluetriangle.analytics.breadcrumbs.instrumentation.UserEventInstrumen
 import org.json.JSONArray
 
 internal class BreadcrumbsManager(var config: BreadcrumbsConfig) {
-    private var breadcrumbsCollector: BreadcrumbsCollector? = null
+    /**
+     * Marked as `internal` for React Native support for breadcrumbs. Don't change the `internal` modifier.
+     */
+    internal var breadcrumbsCollector: BreadcrumbsCollector? = null
     private var instrumentations: MutableMap<BreadcrumbsFeature, BreadcrumbInstrumentation> = mutableMapOf()
 
     private var features = BreadcrumbsFeature.values().filterNot { config.ignoredFeatures.contains(it) }

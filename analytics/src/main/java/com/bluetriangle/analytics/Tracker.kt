@@ -119,7 +119,11 @@ class Tracker private constructor(
     internal var screenTrackMonitor: BTTScreenLifecycleTracker? = null
         @Synchronized set
 
-    private var activityLifecycleTracker: ActivityLifecycleTracker? = null
+    /**
+     * Marked as `internal` for React Native support for sending Activity callback. Don't change the `internal` modifier.
+     */
+    @PublishedApi
+    internal var activityLifecycleTracker: ActivityLifecycleTracker? = null
         @Synchronized set
 
     internal var networkTimelineTracker: NetworkTimelineTracker? = null
